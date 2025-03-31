@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Cat Guessing Game</title>
+    <!-- Import Roboto font from Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #f4cc99;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .container {
+            position: relative;
+            /* Required for absolute child positioning */
+            width: 600px;
+            text-align: center;
+            transform: scale(1.0);
+            z-index: 0;
+            overflow: visible;
+        }
+
+        .cat {
+            position: absolute;
+            top: -340%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 1024px;
+            height: auto;
+            z-index: 1;
+            /* behind pupils */
+            pointer-events: none;
+        }
+
+        .paws {
+            position: absolute;
+            top: -340%;
+            /* Position above the input bar */
+            left: 50%;
+            transform: translateX(-50%);
+            width: 1024px;
+            /* Adjust as needed */
+            height: auto;
+            z-index: 4;
+            /* Above the input (z-index 3) */
+            pointer-events: none;
+        }
+
+        .image-container {
+            position: absolute;
+            top: -440%; /* Position above the cat */
+            left: 50%;
+            transform: translateX(-50%);
+            width: 300px; /* Adjust as needed */
+            height: 200px; /* Adjust as needed */
+            z-index: 11; /* Above everything else */
+            border: 3px solid #ffd8b1; /* Light peachy border */
+            border-radius: 12px;
+            background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent white */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+        .image-container img {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+        }
+
+        .pupil {
+            position: absolute;
+            width: 28px;
+            height: 28px;
+            background: rgb(0, 0, 0);
+            border-radius: 50%;
+            z-index: 10;
+            /* increased z-index to ensure it's above cat */
+            pointer-events: none;
+        }
+
+        /* These values should match your cat SVG's eye positions */
+        #left-pupil {
+            top: 60px;
+            left: 190px;
+        }
+
+        #right-pupil {
+            top: 60px;
+            left: 290px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 20px;
+            font-size: 1.5rem;
+            border: 2px solid #ccc;
+            border-radius: 14px;
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+            outline: none;
+            z-index: 3;
+            position: relative;
+            background: #fff;
+            text-align: center;
+            /* Center the text inside the input */
+            font-family: 'Roboto', sans-serif;
+        }
+
+        /* Set placeholder text to center as well */
+        ::placeholder {
+            text-align: center;
+            font-family: 'Roboto', sans-serif;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+
+        <img class="cat" src="bitmap.svg" alt="Cat SVG">
+        <!-- Pupils -->
+        <div class="pupil" id="left-pupil"></div>
+        <div class="pupil" id="right-pupil"></div>
+        <input type="text" placeholder="Enter your guess...">
+        <img class="paws" src="paws.svg" alt="Cat Paws">
+    </div>
+
+    
+
+    <script>
+        const leftPupil = document.getElementById('left-pupil');
+        const rightPupil = document.getElementById('right-pupil');
+        const container = document.querySelector('.container');
+        const eyeCenters = {
+            left: { x: 248, y: -75 },  // Adjusted to match initial positioning
+            right: { x: 352, y: -75 }
+        };
+        const maxMove = 8;
+        document.addEventListener('mousemove', (e) => {
+            const rect = container.getBoundingClientRect();
+            const mouseX = e.clientX - rect.left;
+            const mouseY = e.clientY - rect.top;
+            movePupil(leftPupil, eyeCenters.left, mouseX, mouseY);
+            movePupil(rightPupil, eyeCenters.right, mouseX, mouseY);
+        });
+        function movePupil(pupil, center, mouseX, mouseY) {
+            const dx = mouseX - center.x;
+            const dy = mouseY - center.y;
+            const angle = Math.atan2(dy, dx);
+            const x = center.x + Math.cos(angle) * maxMove;
+            const y = center.y + Math.sin(angle) * maxMove;
+            pupil.style.left = `${x - 14}px`; // Center pupil (28px wide)
+            pupil.style.top = `${y - 14}px`;
+        }
+    </script>
+</body>
+
+</html>
