@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Cat Guessing Game</title>
+    <title>Guess the Cat 😼</title>
     <!-- Import Roboto font from Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
@@ -12,10 +12,13 @@
             padding: 0;
             background: #f4cc99;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             height: 100vh;
             font-family: 'Roboto', sans-serif;
+            cursor: url('mouse.svg'), pointer;
+            /* Added custom cursor */
         }
 
         .container {
@@ -56,20 +59,27 @@
 
         .image-container {
             position: absolute;
-            top: -440%; /* Position above the cat */
+            top: -440%;
+            /* Position above the cat */
             left: 50%;
             transform: translateX(-50%);
-            width: 300px; /* Adjust as needed */
-            height: 200px; /* Adjust as needed */
-            z-index: 11; /* Above everything else */
-            border: 3px solid #ffd8b1; /* Light peachy border */
+            width: 300px;
+            /* Adjust as needed */
+            height: 200px;
+            /* Adjust as needed */
+            z-index: 11;
+            /* Above everything else */
+            border: 3px solid #ffd8b1;
+            /* Light peachy border */
             border-radius: 12px;
-            background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent white */
+            background-color: rgba(255, 255, 255, 0.8);
+            /* Semi-transparent white */
             display: flex;
             justify-content: center;
             align-items: center;
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
         }
+
         .image-container img {
             max-width: 90%;
             max-height: 90%;
@@ -119,12 +129,49 @@
             text-align: center;
             font-family: 'Roboto', sans-serif;
         }
+
+        .placeholder-container {
+            height: 400px;
+            /* Match the text box/container width */
+            margin: 20px auto;
+            /* Center horizontally with auto margins */
+            text-align: center;
+            padding-left: 1.5%;
+            padding-top: 2%;
+            padding-bottom: 2%;
+        }
+
+        .placeholder-container img {
+            width: 100%;
+            /* Take full width of the container */
+            height: 100%;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+        }
+
+        /* New circles container styling */
+        .circles-container {
+            width: 600px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: white;
+            border: 2px solid #ccc;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
     </style>
 </head>
 
 <body>
     <div class="container">
-
         <img class="cat" src="bitmap.svg" alt="Cat SVG">
         <!-- Pupils -->
         <div class="pupil" id="left-pupil"></div>
@@ -133,14 +180,26 @@
         <img class="paws" src="paws.svg" alt="Cat Paws">
     </div>
 
-    
+    <!-- Placeholder image container -->
+    <div class="placeholder-container">
+        <img src="https://placehold.co/600x400" alt="Placeholder Image">
+    </div>
+
+    <!-- New circles container with 5 circles -->
+    <div class="circles-container">
+        <div class="circle" data-toggle="green"></div>
+        <div class="circle" data-toggle="red"></div>
+        <div class="circle" data-toggle="green"></div>
+        <div class="circle" data-toggle="red"></div>
+        <div class="circle" data-toggle="green"></div>
+    </div>
 
     <script>
         const leftPupil = document.getElementById('left-pupil');
         const rightPupil = document.getElementById('right-pupil');
         const container = document.querySelector('.container');
         const eyeCenters = {
-            left: { x: 248, y: -75 },  // Adjusted to match initial positioning
+            left: { x: 248, y: -75 },
             right: { x: 352, y: -75 }
         };
         const maxMove = 8;
@@ -157,10 +216,33 @@
             const angle = Math.atan2(dy, dx);
             const x = center.x + Math.cos(angle) * maxMove;
             const y = center.y + Math.sin(angle) * maxMove;
-            pupil.style.left = `${x - 14}px`; // Center pupil (28px wide)
+            pupil.style.left = `${x - 14}px`;
             pupil.style.top = `${y - 14}px`;
         }
+
+        // Define custom colors for toggles
+        const customColors = {
+            green: "#4CAF50", // Custom green shade
+            red: "#F44336"    // Custom red shade
+        };
+
+        // Toggle circles between white and their designated custom color (green or red)
+        const circles = document.querySelectorAll('.circle');
+        circles.forEach(circle => {
+            circle.addEventListener('click', () => {
+                if (circle.classList.contains('active')) {
+                    circle.classList.remove('active');
+                    circle.style.backgroundColor = 'white';
+                } else {
+                    circle.classList.add('active');
+                    const toggleKey = circle.getAttribute('data-toggle');
+                    // Use the custom color mapping if available, otherwise fallback to the attribute value
+                    circle.style.backgroundColor = customColors[toggleKey] || toggleKey;
+                }
+            });
+        });
     </script>
+
 </body>
 
 </html>
