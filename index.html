@@ -49,7 +49,7 @@
     .pupil {
       position: absolute;
       width: 28px;
-      height: 28px;
+      height: 36px;
       background: rgb(0, 0, 0);
       border-radius: 50%;
       z-index: 10;
@@ -295,8 +295,8 @@
     const rightPupil = document.getElementById('right-pupil');
     const container = document.querySelector('.container');
     const eyeCenters = {
-      left: { x: 248, y: -75 },
-      right: { x: 352, y: -75 }
+      left: { x: 245, y: -79 },
+      right: { x: 349, y: -79 }
     };
     const maxMove = 8;
     document.addEventListener('mousemove', (e) => {
@@ -312,7 +312,7 @@
       const angle = Math.atan2(dy, dx);
       const x = center.x + Math.cos(angle) * maxMove;
       const y = center.y + Math.sin(angle) * maxMove;
-      pupil.style.left = `${x - 14}px`;
+      pupil.style.left = `${x - 10}px`;
       pupil.style.top = `${y - 14}px`;
     }
     function updateCountdown() {
