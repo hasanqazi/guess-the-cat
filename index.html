@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <title>Guess the Cat 😼</title>
-  <!-- Import Roboto font from Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
     body {
@@ -17,8 +16,6 @@
       height: 100vh;
       font-family: 'Roboto', sans-serif;
       cursor: url('mouse.svg'), pointer;
-      /* Shift entire page down by 50px */
-      transform: translateY(50px);
     }
     .container {
       position: relative;
@@ -27,6 +24,7 @@
       transform: scale(1.0);
       z-index: 0;
       overflow: visible;
+      margin-top: 50px;
     }
     .cat {
       position: absolute;
@@ -57,7 +55,6 @@
       z-index: 10;
       pointer-events: none;
     }
-    /* These values should match your cat SVG's eye positions */
     #left-pupil {
       top: 60px;
       left: 190px;
@@ -124,7 +121,6 @@
       font-size: 1.5rem;
       color: #333;
     }
-    /* Popup overlay and popup styling */
     .popup-overlay {
       position: fixed;
       top: 0;
@@ -155,25 +151,41 @@
       background-color: #4CAF50;
       color: white;
     }
+    .autocomplete-items {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 107%;
+      border: 1px solid #ccc;
+      border-top: none;
+      z-index: 5;
+      background-color: #fff;
+      max-height: 150px;
+      overflow-y: auto;
+    }
+    .autocomplete-item {
+      padding: 10px;
+      cursor: pointer;
+    }
+    .autocomplete-item:hover {
+      background-color: #e9e9e9;
+    }
   </style>
 </head>
 <body>
-  <!-- Main game container -->
   <div class="container">
     <img class="cat" src="bitmap.svg" alt="Cat SVG">
     <div class="pupil" id="left-pupil"></div>
     <div class="pupil" id="right-pupil"></div>
-    <!-- Guess input; initially disabled until cat data loads -->
     <input type="text" id="guessInput" placeholder="Enter your guess..." disabled>
+    <div id="autocomplete-list" class="autocomplete-items"></div>
     <img class="paws" src="paws.svg" alt="Cat Paws">
   </div>
 
-  <!-- Cat image container (populated from JSON) -->
   <div id="catImageContainer" class="placeholder-container">
     <p>Loading today's cat...</p>
   </div>
 
-  <!-- Circles for guess attempts -->
   <div class="circles-container">
     <div class="circle"></div>
     <div class="circle"></div>
@@ -182,12 +194,9 @@
     <div class="circle"></div>
   </div>
 
-  <!-- Status message above the countdown -->
   <div id="statusMessage"></div>
-  <!-- Countdown display -->
   <div id="countdown"></div>
 
-  <!-- Popup overlay -->
   <div class="popup-overlay" id="popupOverlay">
     <div class="popup">
       <p id="popupText"></p>
@@ -196,24 +205,22 @@
   </div>
 
   <script>
-    // Helper: Format a Date object as "YYYY-MM-DD"
-    function getFormattedDate(date) {
+    let allCatNames = [];  
+    let correctCatName = "";  
+    const todayFormatted = (function(date) {
       const year = date.getFullYear();
       let month = date.getMonth() + 1;
       let day = date.getDate();
       if (month < 10) month = '0' + month;
       if (day < 10) day = '0' + day;
       return `${year}-${month}-${day}`;
-    }
-    const todayFormatted = getFormattedDate(new Date());
+    })(new Date());
     const gameStateKey = `gameState_${todayFormatted}`;
-
-    // Global variable to hold today's correct cat name
-    let correctCatName = "";
     const guessInput = document.getElementById('guessInput');
+    const autocompleteList = document.getElementById('autocomplete-list');
     guessInput.disabled = true;
+    
 
-    // Function to save the game state to localStorage
     function saveGameState() {
       const gameState = {
         attempts: attempts,
@@ -222,28 +229,26 @@
       };
       localStorage.setItem(gameStateKey, JSON.stringify(gameState));
     }
-
-    // Function to load and restore game state from localStorage
     function loadGameState() {
       const savedState = localStorage.getItem(gameStateKey);
       if (savedState) {
         const gameState = JSON.parse(savedState);
         attempts = gameState.attempts;
         solved = gameState.solved;
-        // Restore circle colors
+
         circles.forEach((circle, i) => {
           if (gameState.circleColors[i]) {
             circle.style.backgroundColor = gameState.circleColors[i];
           }
         });
-        // Disable input if the game has been played
+
         guessInput.disabled = true;
         document.getElementById('statusMessage').textContent =
           `You have already guessed the cat for today, it was ${correctCatName}.`;
       }
     }
 
-    // Fetch cat data from JSON (ensure your cats.json is formatted correctly)
+
     fetch('cats.json')
       .then(response => {
         if (!response.ok) throw new Error('Network error');
@@ -253,9 +258,11 @@
         const catData = data[todayFormatted];
         const catContainer = document.getElementById('catImageContainer');
         if (catData) {
-          catContainer.innerHTML = `<img src="${catData.image}" referrerpolicy="no-referrer" >`;
+          catContainer.innerHTML = `<img src="${catData.image}" referrerpolicy="no-referrer">`;
           correctCatName = catData.name;
-          // Check if user already played today
+
+          allCatNames = [...new Set(Object.values(data).map(cat => cat.name))];
+
           const lastPlayDate = localStorage.getItem('lastPlayDate');
           if (lastPlayDate === todayFormatted) {
             guessInput.disabled = true;
@@ -275,7 +282,37 @@
         document.getElementById('catImageContainer').innerHTML = `<p>Error loading cat data.</p>`;
       });
 
-    // Pupil movement functionality
+
+    guessInput.addEventListener('input', function() {
+      const value = this.value;
+      autocompleteList.innerHTML = '';
+      if (!value) {
+        return false;
+      }
+
+      const suggestions = allCatNames.filter(name =>
+        name.toLowerCase().includes(value.toLowerCase())
+      );
+      suggestions.forEach(suggestion => {
+        const item = document.createElement('div');
+        item.classList.add('autocomplete-item');
+        item.textContent = suggestion;
+        item.addEventListener('click', function() {
+          guessInput.value = suggestion;
+          autocompleteList.innerHTML = '';
+        });
+        autocompleteList.appendChild(item);
+      });
+    });
+
+
+    document.addEventListener('click', function(e) {
+      if (e.target !== guessInput) {
+        autocompleteList.innerHTML = '';
+      }
+    });
+
+
     const leftPupil = document.getElementById('left-pupil');
     const rightPupil = document.getElementById('right-pupil');
     const container = document.querySelector('.container');
@@ -301,7 +338,7 @@
       pupil.style.top = `${y - 14}px`;
     }
 
-    // Countdown timer until the next day (midnight)
+
     function updateCountdown() {
       const now = new Date();
       const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
@@ -315,12 +352,10 @@
     updateCountdown();
     setInterval(updateCountdown, 1000);
 
-    // Game logic variables
+
     const circles = document.querySelectorAll('.circle');
     let attempts = 0;
     let solved = false;
-
-    // Finish game: show popup, update localStorage, disable further guessing
     function finishGame(correct) {
       let streak = Number(localStorage.getItem('streak')) || 0;
       if (correct) {
@@ -335,22 +370,18 @@
       const message = `You have guessed the cat for today, it was ${correctCatName}. Your current streak is ${streak}. It took you ${totalGuesses} guess${totalGuesses === 1 ? '' : 'es'}.`;
       document.getElementById('popupText').textContent = message;
       document.getElementById('popupOverlay').style.display = "flex";
-      // Prevent scrolling while popup is active
+
       document.body.style.overflow = 'hidden';
       document.getElementById('statusMessage').textContent =
         `You have already guessed the cat for today, it was ${correctCatName}.`;
       guessInput.disabled = true;
       saveGameState();
     }
-
-    // Popup close button event
     document.getElementById('closePopupBtn').addEventListener('click', () => {
       document.getElementById('popupOverlay').style.display = "none";
-      // Restore scrolling when popup is closed
+
       document.body.style.overflow = 'auto';
     });
-
-    // Guessing game: check input when Enter is pressed
     guessInput.addEventListener('keydown', (e) => {
       if (e.key === "Enter" && !solved) {
         const guess = guessInput.value.trim().toLowerCase();
