@@ -8,7 +8,7 @@
     body {
       margin: 0;
       padding: 0;
-      background: #f4cc99;
+      background: #f2e8d6;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -298,7 +298,10 @@
       left: { x: 245, y: -79 },
       right: { x: 349, y: -79 }
     };
-    const maxMove = 8;
+
+    const maxMoveX = 8;
+    const maxMoveY = 6;
+
     document.addEventListener('mousemove', (e) => {
       const rect = container.getBoundingClientRect();
       const mouseX = e.clientX - rect.left;
@@ -310,8 +313,8 @@
       const dx = mouseX - center.x;
       const dy = mouseY - center.y;
       const angle = Math.atan2(dy, dx);
-      const x = center.x + Math.cos(angle) * maxMove;
-      const y = center.y + Math.sin(angle) * maxMove;
+      const x = center.x + Math.cos(angle) * maxMoveX;
+      const y = center.y + Math.sin(angle) * maxMoveY;
       pupil.style.left = `${x - 10}px`;
       pupil.style.top = `${y - 14}px`;
     }
