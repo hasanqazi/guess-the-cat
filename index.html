@@ -1,248 +1,370 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <title>Guess the Cat 😼</title>
-    <!-- Import Roboto font from Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            background: #f4cc99;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            font-family: 'Roboto', sans-serif;
-            cursor: url('mouse.svg'), pointer;
-            /* Added custom cursor */
-        }
-
-        .container {
-            position: relative;
-            /* Required for absolute child positioning */
-            width: 600px;
-            text-align: center;
-            transform: scale(1.0);
-            z-index: 0;
-            overflow: visible;
-        }
-
-        .cat {
-            position: absolute;
-            top: -340%;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 1024px;
-            height: auto;
-            z-index: 1;
-            /* behind pupils */
-            pointer-events: none;
-        }
-
-        .paws {
-            position: absolute;
-            top: -340%;
-            /* Position above the input bar */
-            left: 50%;
-            transform: translateX(-50%);
-            width: 1024px;
-            /* Adjust as needed */
-            height: auto;
-            z-index: 4;
-            /* Above the input (z-index 3) */
-            pointer-events: none;
-        }
-
-        .image-container {
-            position: absolute;
-            top: -440%;
-            /* Position above the cat */
-            left: 50%;
-            transform: translateX(-50%);
-            width: 300px;
-            /* Adjust as needed */
-            height: 200px;
-            /* Adjust as needed */
-            z-index: 11;
-            /* Above everything else */
-            border: 3px solid #ffd8b1;
-            /* Light peachy border */
-            border-radius: 12px;
-            background-color: rgba(255, 255, 255, 0.8);
-            /* Semi-transparent white */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-        }
-
-        .image-container img {
-            max-width: 90%;
-            max-height: 90%;
-            object-fit: contain;
-        }
-
-        .pupil {
-            position: absolute;
-            width: 28px;
-            height: 28px;
-            background: rgb(0, 0, 0);
-            border-radius: 50%;
-            z-index: 10;
-            /* increased z-index to ensure it's above cat */
-            pointer-events: none;
-        }
-
-        /* These values should match your cat SVG's eye positions */
-        #left-pupil {
-            top: 60px;
-            left: 190px;
-        }
-
-        #right-pupil {
-            top: 60px;
-            left: 290px;
-        }
-
-        input[type="text"] {
-            width: 100%;
-            padding: 20px;
-            font-size: 1.5rem;
-            border: 2px solid #ccc;
-            border-radius: 14px;
-            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
-            outline: none;
-            z-index: 3;
-            position: relative;
-            background: #fff;
-            text-align: center;
-            /* Center the text inside the input */
-            font-family: 'Roboto', sans-serif;
-        }
-
-        /* Set placeholder text to center as well */
-        ::placeholder {
-            text-align: center;
-            font-family: 'Roboto', sans-serif;
-        }
-
-        .placeholder-container {
-            height: 400px;
-            /* Match the text box/container width */
-            margin: 20px auto;
-            /* Center horizontally with auto margins */
-            text-align: center;
-            padding-left: 1.5%;
-            padding-top: 2%;
-            padding-bottom: 2%;
-        }
-
-        .placeholder-container img {
-            width: 100%;
-            /* Take full width of the container */
-            height: 100%;
-            border: 2px solid #ccc;
-            border-radius: 8px;
-        }
-
-        /* New circles container styling */
-        .circles-container {
-            width: 600px;
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-top: 20px;
-        }
-
-        .circle {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background-color: white;
-            border: 2px solid #ccc;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>Guess the Cat 😼</title>
+  <!-- Import Roboto font from Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #f4cc99;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      font-family: 'Roboto', sans-serif;
+      cursor: url('mouse.svg'), pointer;
+      /* Shift entire page down by 50px */
+      transform: translateY(50px);
+    }
+    .container {
+      position: relative;
+      width: 600px;
+      text-align: center;
+      transform: scale(1.0);
+      z-index: 0;
+      overflow: visible;
+    }
+    .cat {
+      position: absolute;
+      top: -340%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 1024px;
+      height: auto;
+      z-index: 1;
+      pointer-events: none;
+    }
+    .paws {
+      position: absolute;
+      top: -340%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 1024px;
+      height: auto;
+      z-index: 4;
+      pointer-events: none;
+    }
+    .pupil {
+      position: absolute;
+      width: 28px;
+      height: 28px;
+      background: rgb(0, 0, 0);
+      border-radius: 50%;
+      z-index: 10;
+      pointer-events: none;
+    }
+    /* These values should match your cat SVG's eye positions */
+    #left-pupil {
+      top: 60px;
+      left: 190px;
+    }
+    #right-pupil {
+      top: 60px;
+      left: 290px;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 20px;
+      font-size: 1.5rem;
+      border: 2px solid #ccc;
+      border-radius: 14px;
+      box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+      outline: none;
+      z-index: 3;
+      position: relative;
+      background: #fff;
+      text-align: center;
+      font-family: 'Roboto', sans-serif;
+    }
+    ::placeholder {
+      text-align: center;
+      font-family: 'Roboto', sans-serif;
+    }
+    .placeholder-container {
+      height: 400px;
+      margin: 20px auto;
+      text-align: center;
+      padding-left: 1.5%;
+      padding-top: 2%;
+      padding-bottom: 2%;
+    }
+    .placeholder-container img {
+      width: 100%;
+      height: 100%;
+      border: 2px solid #ccc;
+      border-radius: 8px;
+      object-fit: contain;
+    }
+    .circles-container {
+      width: 600px;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 20px;
+    }
+    .circle {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: white;
+      border: 2px solid #ccc;
+      transition: background-color 0.3s ease;
+    }
+    #statusMessage {
+      font-size: 1.2rem;
+      margin-top: 10px;
+      color: #333;
+    }
+    #countdown {
+      margin-top: 10px;
+      font-size: 1.5rem;
+      color: #333;
+    }
+    /* Popup overlay and popup styling */
+    .popup-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(5px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+    }
+    .popup {
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      text-align: center;
+      max-width: 90%;
+    }
+    .popup button {
+      margin-top: 10px;
+      padding: 8px 16px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      background-color: #4CAF50;
+      color: white;
+    }
+  </style>
 </head>
-
 <body>
-    <div class="container">
-        <img class="cat" src="bitmap.svg" alt="Cat SVG">
-        <!-- Pupils -->
-        <div class="pupil" id="left-pupil"></div>
-        <div class="pupil" id="right-pupil"></div>
-        <input type="text" placeholder="Enter your guess...">
-        <img class="paws" src="paws.svg" alt="Cat Paws">
-    </div>
+  <!-- Main game container -->
+  <div class="container">
+    <img class="cat" src="bitmap.svg" alt="Cat SVG">
+    <div class="pupil" id="left-pupil"></div>
+    <div class="pupil" id="right-pupil"></div>
+    <!-- Guess input; initially disabled until cat data loads -->
+    <input type="text" id="guessInput" placeholder="Enter your guess..." disabled>
+    <img class="paws" src="paws.svg" alt="Cat Paws">
+  </div>
 
-    <!-- Placeholder image container -->
-    <div class="placeholder-container">
-        <img src="https://placehold.co/600x400" alt="Placeholder Image">
-    </div>
+  <!-- Cat image container (populated from JSON) -->
+  <div id="catImageContainer" class="placeholder-container">
+    <p>Loading today's cat...</p>
+  </div>
 
-    <!-- New circles container with 5 circles -->
-    <div class="circles-container">
-        <div class="circle" data-toggle="green"></div>
-        <div class="circle" data-toggle="red"></div>
-        <div class="circle" data-toggle="green"></div>
-        <div class="circle" data-toggle="red"></div>
-        <div class="circle" data-toggle="green"></div>
-    </div>
+  <!-- Circles for guess attempts -->
+  <div class="circles-container">
+    <div class="circle"></div>
+    <div class="circle"></div>
+    <div class="circle"></div>
+    <div class="circle"></div>
+    <div class="circle"></div>
+  </div>
 
-    <script>
-        const leftPupil = document.getElementById('left-pupil');
-        const rightPupil = document.getElementById('right-pupil');
-        const container = document.querySelector('.container');
-        const eyeCenters = {
-            left: { x: 248, y: -75 },
-            right: { x: 352, y: -75 }
-        };
-        const maxMove = 8;
-        document.addEventListener('mousemove', (e) => {
-            const rect = container.getBoundingClientRect();
-            const mouseX = e.clientX - rect.left;
-            const mouseY = e.clientY - rect.top;
-            movePupil(leftPupil, eyeCenters.left, mouseX, mouseY);
-            movePupil(rightPupil, eyeCenters.right, mouseX, mouseY);
+  <!-- Status message above the countdown -->
+  <div id="statusMessage"></div>
+  <!-- Countdown display -->
+  <div id="countdown"></div>
+
+  <!-- Popup overlay -->
+  <div class="popup-overlay" id="popupOverlay">
+    <div class="popup">
+      <p id="popupText"></p>
+      <button id="closePopupBtn">Close</button>
+    </div>
+  </div>
+
+  <script>
+    // Helper: Format a Date object as "YYYY-MM-DD"
+    function getFormattedDate(date) {
+      const year = date.getFullYear();
+      let month = date.getMonth() + 1;
+      let day = date.getDate();
+      if (month < 10) month = '0' + month;
+      if (day < 10) day = '0' + day;
+      return `${year}-${month}-${day}`;
+    }
+    const todayFormatted = getFormattedDate(new Date());
+    const gameStateKey = `gameState_${todayFormatted}`;
+
+    // Global variable to hold today's correct cat name
+    let correctCatName = "";
+    const guessInput = document.getElementById('guessInput');
+    guessInput.disabled = true;
+
+    // Function to save the game state to localStorage
+    function saveGameState() {
+      const gameState = {
+        attempts: attempts,
+        circleColors: Array.from(circles).map(c => c.style.backgroundColor),
+        solved: solved
+      };
+      localStorage.setItem(gameStateKey, JSON.stringify(gameState));
+    }
+
+    // Function to load and restore game state from localStorage
+    function loadGameState() {
+      const savedState = localStorage.getItem(gameStateKey);
+      if (savedState) {
+        const gameState = JSON.parse(savedState);
+        attempts = gameState.attempts;
+        solved = gameState.solved;
+        // Restore circle colors
+        circles.forEach((circle, i) => {
+          if (gameState.circleColors[i]) {
+            circle.style.backgroundColor = gameState.circleColors[i];
+          }
         });
-        function movePupil(pupil, center, mouseX, mouseY) {
-            const dx = mouseX - center.x;
-            const dy = mouseY - center.y;
-            const angle = Math.atan2(dy, dx);
-            const x = center.x + Math.cos(angle) * maxMove;
-            const y = center.y + Math.sin(angle) * maxMove;
-            pupil.style.left = `${x - 14}px`;
-            pupil.style.top = `${y - 14}px`;
+        // Disable input if the game has been played
+        guessInput.disabled = true;
+        document.getElementById('statusMessage').textContent =
+          `You have already guessed the cat for today, it was ${correctCatName}.`;
+      }
+    }
+
+    // Fetch cat data from JSON (ensure your cats.json is formatted correctly)
+    fetch('cats.json')
+      .then(response => {
+        if (!response.ok) throw new Error('Network error');
+        return response.json();
+      })
+      .then(data => {
+        const catData = data[todayFormatted];
+        const catContainer = document.getElementById('catImageContainer');
+        if (catData) {
+          catContainer.innerHTML = `<img src="${catData.image}" alt="${catData.name}">`;
+          correctCatName = catData.name;
+          // Check if user already played today
+          const lastPlayDate = localStorage.getItem('lastPlayDate');
+          if (lastPlayDate === todayFormatted) {
+            guessInput.disabled = true;
+            const lastCat = localStorage.getItem('lastCat');
+            document.getElementById('statusMessage').textContent =
+              `You have already guessed the cat for today, it was ${lastCat}.`;
+            loadGameState();
+          } else {
+            guessInput.disabled = false;
+          }
+        } else {
+          catContainer.innerHTML = `<p>No cat data available for today.</p>`;
         }
+      })
+      .catch(error => {
+        console.error("Error loading cat data:", error);
+        document.getElementById('catImageContainer').innerHTML = `<p>Error loading cat data.</p>`;
+      });
 
-        // Define custom colors for toggles
-        const customColors = {
-            green: "#4CAF50", // Custom green shade
-            red: "#F44336"    // Custom red shade
-        };
+    // Pupil movement functionality
+    const leftPupil = document.getElementById('left-pupil');
+    const rightPupil = document.getElementById('right-pupil');
+    const container = document.querySelector('.container');
+    const eyeCenters = {
+      left: { x: 248, y: -75 },
+      right: { x: 352, y: -75 }
+    };
+    const maxMove = 8;
+    document.addEventListener('mousemove', (e) => {
+      const rect = container.getBoundingClientRect();
+      const mouseX = e.clientX - rect.left;
+      const mouseY = e.clientY - rect.top;
+      movePupil(leftPupil, eyeCenters.left, mouseX, mouseY);
+      movePupil(rightPupil, eyeCenters.right, mouseX, mouseY);
+    });
+    function movePupil(pupil, center, mouseX, mouseY) {
+      const dx = mouseX - center.x;
+      const dy = mouseY - center.y;
+      const angle = Math.atan2(dy, dx);
+      const x = center.x + Math.cos(angle) * maxMove;
+      const y = center.y + Math.sin(angle) * maxMove;
+      pupil.style.left = `${x - 14}px`;
+      pupil.style.top = `${y - 14}px`;
+    }
 
-        // Toggle circles between white and their designated custom color (green or red)
-        const circles = document.querySelectorAll('.circle');
-        circles.forEach(circle => {
-            circle.addEventListener('click', () => {
-                if (circle.classList.contains('active')) {
-                    circle.classList.remove('active');
-                    circle.style.backgroundColor = 'white';
-                } else {
-                    circle.classList.add('active');
-                    const toggleKey = circle.getAttribute('data-toggle');
-                    // Use the custom color mapping if available, otherwise fallback to the attribute value
-                    circle.style.backgroundColor = customColors[toggleKey] || toggleKey;
-                }
-            });
-        });
-    </script>
+    // Countdown timer until the next day (midnight)
+    function updateCountdown() {
+      const now = new Date();
+      const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+      const diff = tomorrow - now;
+      const hours = Math.floor(diff / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+      document.getElementById('countdown').textContent =
+        `Countdown to next day: ${hours}h ${minutes}m ${seconds}s`;
+    }
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
 
+    // Game logic variables
+    const circles = document.querySelectorAll('.circle');
+    let attempts = 0;
+    let solved = false;
+
+    // Finish game: show popup, update localStorage, disable further guessing
+    function finishGame(correct) {
+      let streak = Number(localStorage.getItem('streak')) || 0;
+      if (correct) {
+        streak++;
+      } else {
+        streak = 0;
+      }
+      localStorage.setItem('streak', streak);
+      localStorage.setItem('lastPlayDate', todayFormatted);
+      localStorage.setItem('lastCat', correctCatName);
+      const message = `You have guessed the cat for today, it was ${correctCatName}. Your current streak is ${streak}. It took you ${attempts + (correct ? 1 : 0)} guess${attempts + (correct ? 1 : 0) === 1 ? '' : 'es'}.`;
+      document.getElementById('popupText').textContent = message;
+      document.getElementById('popupOverlay').style.display = "flex";
+      document.getElementById('statusMessage').textContent =
+        `You have already guessed the cat for today, it was ${correctCatName}.`;
+      guessInput.disabled = true;
+      saveGameState();
+    }
+
+    // Popup close button event
+    document.getElementById('closePopupBtn').addEventListener('click', () => {
+      document.getElementById('popupOverlay').style.display = "none";
+    });
+
+    // Guessing game: check input when Enter is pressed
+    guessInput.addEventListener('keydown', (e) => {
+      if (e.key === "Enter" && !solved) {
+        const guess = guessInput.value.trim().toLowerCase();
+        if (guess === "") return;
+        if (guess === correctCatName.toLowerCase()) {
+          circles[attempts].style.backgroundColor = "#4CAF50";
+          solved = true;
+          finishGame(true);
+        } else {
+          circles[attempts].style.backgroundColor = "#F44336";
+          attempts++;
+          if (attempts >= circles.length) {
+            finishGame(false);
+          }
+        }
+        guessInput.value = "";
+        saveGameState();
+      }
+    });
+  </script>
 </body>
-
 </html>
