@@ -205,8 +205,8 @@
   </div>
 
   <script>
-    let allCatNames = [];  
-    let correctCatName = "";  
+    let allCatNames = [];
+    let correctCatName = "";
     const todayFormatted = (function(date) {
       const year = date.getFullYear();
       let month = date.getMonth() + 1;
@@ -220,7 +220,6 @@
     const autocompleteList = document.getElementById('autocomplete-list');
     guessInput.disabled = true;
     
-
     function saveGameState() {
       const gameState = {
         attempts: attempts,
@@ -235,19 +234,16 @@
         const gameState = JSON.parse(savedState);
         attempts = gameState.attempts;
         solved = gameState.solved;
-
         circles.forEach((circle, i) => {
           if (gameState.circleColors[i]) {
             circle.style.backgroundColor = gameState.circleColors[i];
           }
         });
-
         guessInput.disabled = true;
         document.getElementById('statusMessage').textContent =
           `You have already guessed the cat for today, it was ${correctCatName}.`;
       }
     }
-
 
     fetch('cats.json')
       .then(response => {
@@ -260,9 +256,7 @@
         if (catData) {
           catContainer.innerHTML = `<img src="${catData.image}" referrerpolicy="no-referrer">`;
           correctCatName = catData.name;
-
           allCatNames = [...new Set(Object.values(data).map(cat => cat.name))];
-
           const lastPlayDate = localStorage.getItem('lastPlayDate');
           if (lastPlayDate === todayFormatted) {
             guessInput.disabled = true;
@@ -282,14 +276,10 @@
         document.getElementById('catImageContainer').innerHTML = `<p>Error loading cat data.</p>`;
       });
 
-
     guessInput.addEventListener('input', function() {
       const value = this.value;
       autocompleteList.innerHTML = '';
-      if (!value) {
-        return false;
-      }
-
+      if (!value) return;
       const suggestions = allCatNames.filter(name =>
         name.toLowerCase().includes(value.toLowerCase())
       );
@@ -304,14 +294,11 @@
         autocompleteList.appendChild(item);
       });
     });
-
-
     document.addEventListener('click', function(e) {
       if (e.target !== guessInput) {
         autocompleteList.innerHTML = '';
       }
     });
-
 
     const leftPupil = document.getElementById('left-pupil');
     const rightPupil = document.getElementById('right-pupil');
@@ -338,7 +325,6 @@
       pupil.style.top = `${y - 14}px`;
     }
 
-
     function updateCountdown() {
       const now = new Date();
       const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
@@ -352,25 +338,25 @@
     updateCountdown();
     setInterval(updateCountdown, 1000);
 
-
     const circles = document.querySelectorAll('.circle');
     let attempts = 0;
     let solved = false;
     function finishGame(correct) {
       let streak = Number(localStorage.getItem('streak')) || 0;
+      let totalGuesses = attempts + (correct ? 1 : 0);
+      let message = "";
       if (correct) {
         streak++;
+        message = `You have guessed the cat for today, it was ${correctCatName}. Your current streak is ${streak}. It took you ${totalGuesses} guess${totalGuesses === 1 ? '' : 'es'}.`;
       } else {
         streak = 0;
+        message = `You didn't guess the cat for today, it was ${correctCatName}. Your current streak is ${streak}.`;
       }
       localStorage.setItem('streak', streak);
       localStorage.setItem('lastPlayDate', todayFormatted);
       localStorage.setItem('lastCat', correctCatName);
-      const totalGuesses = attempts + (correct ? 1 : 0);
-      const message = `You have guessed the cat for today, it was ${correctCatName}. Your current streak is ${streak}. It took you ${totalGuesses} guess${totalGuesses === 1 ? '' : 'es'}.`;
       document.getElementById('popupText').textContent = message;
       document.getElementById('popupOverlay').style.display = "flex";
-
       document.body.style.overflow = 'hidden';
       document.getElementById('statusMessage').textContent =
         `You have already guessed the cat for today, it was ${correctCatName}.`;
@@ -379,7 +365,6 @@
     }
     document.getElementById('closePopupBtn').addEventListener('click', () => {
       document.getElementById('popupOverlay').style.display = "none";
-
       document.body.style.overflow = 'auto';
     });
     guessInput.addEventListener('keydown', (e) => {
