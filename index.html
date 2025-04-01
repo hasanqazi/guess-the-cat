@@ -253,7 +253,7 @@
         const catData = data[todayFormatted];
         const catContainer = document.getElementById('catImageContainer');
         if (catData) {
-          catContainer.innerHTML = `<img src="${catData.image}" alt="${catData.name}">`;
+          catContainer.innerHTML = `<img src="${catData.image}" referrerpolicy="no-referrer" >`;
           correctCatName = catData.name;
           // Check if user already played today
           const lastPlayDate = localStorage.getItem('lastPlayDate');
@@ -331,9 +331,12 @@
       localStorage.setItem('streak', streak);
       localStorage.setItem('lastPlayDate', todayFormatted);
       localStorage.setItem('lastCat', correctCatName);
-      const message = `You have guessed the cat for today, it was ${correctCatName}. Your current streak is ${streak}. It took you ${attempts + (correct ? 1 : 0)} guess${attempts + (correct ? 1 : 0) === 1 ? '' : 'es'}.`;
+      const totalGuesses = attempts + (correct ? 1 : 0);
+      const message = `You have guessed the cat for today, it was ${correctCatName}. Your current streak is ${streak}. It took you ${totalGuesses} guess${totalGuesses === 1 ? '' : 'es'}.`;
       document.getElementById('popupText').textContent = message;
       document.getElementById('popupOverlay').style.display = "flex";
+      // Prevent scrolling while popup is active
+      document.body.style.overflow = 'hidden';
       document.getElementById('statusMessage').textContent =
         `You have already guessed the cat for today, it was ${correctCatName}.`;
       guessInput.disabled = true;
@@ -343,6 +346,8 @@
     // Popup close button event
     document.getElementById('closePopupBtn').addEventListener('click', () => {
       document.getElementById('popupOverlay').style.display = "none";
+      // Restore scrolling when popup is closed
+      document.body.style.overflow = 'auto';
     });
 
     // Guessing game: check input when Enter is pressed
