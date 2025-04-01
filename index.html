@@ -181,11 +181,9 @@
     <div id="autocomplete-list" class="autocomplete-items"></div>
     <img class="paws" src="paws.svg" alt="Cat Paws">
   </div>
-
   <div id="catImageContainer" class="placeholder-container">
     <p>Loading today's cat...</p>
   </div>
-
   <div class="circles-container">
     <div class="circle"></div>
     <div class="circle"></div>
@@ -193,17 +191,14 @@
     <div class="circle"></div>
     <div class="circle"></div>
   </div>
-
   <div id="statusMessage"></div>
   <div id="countdown"></div>
-
   <div class="popup-overlay" id="popupOverlay">
     <div class="popup">
       <p id="popupText"></p>
       <button id="closePopupBtn">Close</button>
     </div>
   </div>
-
   <script>
     let allCatNames = [];
     let correctCatName = "";
@@ -219,7 +214,6 @@
     const guessInput = document.getElementById('guessInput');
     const autocompleteList = document.getElementById('autocomplete-list');
     guessInput.disabled = true;
-    
     function saveGameState() {
       const gameState = {
         attempts: attempts,
@@ -244,7 +238,6 @@
           `You have already guessed the cat for today, it was ${correctCatName}.`;
       }
     }
-
     fetch('cats.json')
       .then(response => {
         if (!response.ok) throw new Error('Network error');
@@ -275,7 +268,6 @@
         console.error("Error loading cat data:", error);
         document.getElementById('catImageContainer').innerHTML = `<p>Error loading cat data.</p>`;
       });
-
     guessInput.addEventListener('input', function() {
       const value = this.value;
       autocompleteList.innerHTML = '';
@@ -299,7 +291,6 @@
         autocompleteList.innerHTML = '';
       }
     });
-
     const leftPupil = document.getElementById('left-pupil');
     const rightPupil = document.getElementById('right-pupil');
     const container = document.querySelector('.container');
@@ -324,7 +315,6 @@
       pupil.style.left = `${x - 14}px`;
       pupil.style.top = `${y - 14}px`;
     }
-
     function updateCountdown() {
       const now = new Date();
       const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
@@ -337,7 +327,6 @@
     }
     updateCountdown();
     setInterval(updateCountdown, 1000);
-
     const circles = document.querySelectorAll('.circle');
     let attempts = 0;
     let solved = false;
@@ -359,7 +348,7 @@
       document.getElementById('popupOverlay').style.display = "flex";
       document.body.style.overflow = 'hidden';
       document.getElementById('statusMessage').textContent =
-        `You have already guessed the cat for today, it was ${correctCatName}.`;
+        correct ? `You have already guessed the cat for today, it was ${correctCatName}.` : `You didn't guess the cat for today, it was ${correctCatName}.`;
       guessInput.disabled = true;
       saveGameState();
     }
