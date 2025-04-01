@@ -20,7 +20,7 @@
         body {
             margin: 0;
             padding: 0;
-            background: #f1e5d3;
+            background: url('background.svg') repeat;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -234,7 +234,7 @@
     <script>
         let allCatNames = [];
         let correctCatName = "";
-        const todayFormatted = (function (date) {
+        const todayFormatted = (function(date) {
             const year = date.getFullYear();
             let month = date.getMonth() + 1;
             let day = date.getDate();
@@ -300,7 +300,7 @@
                 console.error("Error loading cat data:", error);
                 document.getElementById('catImageContainer').innerHTML = `<p>Error loading cat data.</p>`;
             });
-        guessInput.addEventListener('input', function () {
+        guessInput.addEventListener('input', function() {
             const value = this.value;
             autocompleteList.innerHTML = '';
             if (!value) return;
@@ -311,14 +311,14 @@
                 const item = document.createElement('div');
                 item.classList.add('autocomplete-item');
                 item.textContent = suggestion;
-                item.addEventListener('click', function () {
+                item.addEventListener('click', function() {
                     guessInput.value = suggestion;
                     autocompleteList.innerHTML = '';
                 });
                 autocompleteList.appendChild(item);
             });
         });
-        document.addEventListener('click', function (e) {
+        document.addEventListener('click', function(e) {
             if (e.target !== guessInput) {
                 autocompleteList.innerHTML = '';
             }
