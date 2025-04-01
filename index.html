@@ -370,6 +370,8 @@
             if (correct) {
                 streak++;
                 message = `You have guessed the cat for today, it was ${correctCatName}. Your current streak is ${streak}. It took you ${totalGuesses} guess${totalGuesses === 1 ? '' : 'es'}.`;
+                let meowAudio = new Audio('meow.mp3');
+                meowAudio.play();
             } else {
                 streak = 0;
                 message = `You didn't guess the cat for today, it was ${correctCatName}. Your current streak is ${streak}.`;
