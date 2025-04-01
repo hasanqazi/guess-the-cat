@@ -298,10 +298,8 @@
       left: { x: 245, y: -79 },
       right: { x: 349, y: -79 }
     };
-
     const maxMoveX = 8;
     const maxMoveY = 6;
-
     document.addEventListener('mousemove', (e) => {
       const rect = container.getBoundingClientRect();
       const mouseX = e.clientX - rect.left;
@@ -377,6 +375,12 @@
         guessInput.value = "";
         saveGameState();
       }
+    });
+    document.addEventListener('DOMContentLoaded', () => {
+      leftPupil.style.left = `${eyeCenters.left.x - 14}px`;
+      leftPupil.style.top = `${eyeCenters.left.y - 18}px`;
+      rightPupil.style.left = `${eyeCenters.right.x - 14}px`;
+      rightPupil.style.top = `${eyeCenters.right.y - 18}px`;
     });
   </script>
 </body>
