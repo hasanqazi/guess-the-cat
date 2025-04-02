@@ -74,7 +74,8 @@
     input[type="text"] {
       width: 100%;
       padding: 20px;
-      font-size: 1.5rem;
+      height: 29px;
+      font-size: 1.4em;
       border: 2px solid #734c28;
       border-radius: 14px;
       box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
@@ -83,7 +84,7 @@
       position: relative;
       background: #c18c55;
       text-align: center;
-      font-family: 'Roboto', sans-serif;
+      font-family: 'FOT-Seurat Pro B', sans-serif;
       color: black;
     }
     input[type="text"]:hover {
@@ -91,7 +92,7 @@
     }
     ::placeholder {
       text-align: center;
-      font-family: 'Roboto', sans-serif;
+      font-family: 'FOT-Seurat Pro B', sans-serif;
       color: black;
     }
     .placeholder-container {
@@ -176,11 +177,13 @@
       max-height: 150px;
       overflow-y: auto;
       color: black;
+      font-family: 'FOT-Seurat Pro B', sans-serif;
     }
     .autocomplete-item {
       padding: 10px;
       cursor: url('mouse.svg'), pointer;
       color: black;
+      font-family: 'FOT-Seurat Pro B', sans-serif;
     }
     .autocomplete-item:hover {
       background-color: #734c28;
@@ -306,6 +309,18 @@
     document.addEventListener('click', function(e) {
       if (e.target !== guessInput) {
         autocompleteList.innerHTML = '';
+      }
+    });
+    // When input is focused, clear placeholder if empty
+    guessInput.addEventListener('focus', function() {
+      if (this.value === "") {
+        this.placeholder = "";
+      }
+    });
+    // When input loses focus, restore placeholder if empty
+    guessInput.addEventListener('blur', function() {
+      if (this.value === "") {
+        this.placeholder = "Guess the Cat!";
       }
     });
     const leftPupil = document.getElementById('left-pupil');
