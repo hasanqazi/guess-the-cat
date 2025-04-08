@@ -30,5 +30,45 @@
     "2025-04-08": {
         "name": "American Shorthair",
         "image": "https://i.imgur.com/ci2lDKA.jpeg"
+    },
+    "2025-04-09": {
+        "name": "Burmese",
+        "image": "https://i.imgur.com/G597L8S.jpeg"
+    },
+    "2025-04-10": {
+        "name": "Exotic Shorthair",
+        "image": "https://i.imgur.com/u28QwNV.jpeg"
+    },
+    "2025-04-11": {
+        "name": "Birman",
+        "image": "https://i.imgur.com/OQheOEy.jpeg"
+    },
+    "2025-04-12": {
+        "name": "Scottish Fold",
+        "image": "https://i.imgur.com/O94aHCv.jpeg"
+    },
+    "2025-04-13": {
+        "name": "Bombay",
+        "image": "https://i.imgur.com/M7UHqPr.jpeg"
+    },
+    "2025-04-14": {
+        "name": "Siberian",
+        "image": "https://i.imgur.com/JFELJbP.jpeg"
+    },
+    "2025-04-15": {
+        "name": "Russian Blue",
+        "image": "https://i.imgur.com/HMpRjQ2.jpeg"
+    },
+    "2025-04-16": {
+        "name": "Norwegian Forest",
+        "image": "https://i.imgur.com/sjw0PbS.jpeg"
+    },
+    "2025-04-17": {
+        "name": "Devon Rex",
+        "image": "https://i.imgur.com/9KGgRDh.jpeg"
+    },
+    "2025-04-18": {
+        "name": "Munchkin",
+        "image": "https://i.imgur.com/laoSu0g.jpeg"
     }
 }
