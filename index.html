@@ -233,6 +233,7 @@
     const guessInput = document.getElementById('guessInput');
     const autocompleteList = document.getElementById('autocomplete-list');
     guessInput.disabled = true;
+
     function saveGameState() {
       const gameState = {
         attempts: attempts,
@@ -241,6 +242,7 @@
       };
       localStorage.setItem(gameStateKey, JSON.stringify(gameState));
     }
+
     function loadGameState() {
       const savedState = localStorage.getItem(gameStateKey);
       if (savedState) {
@@ -257,36 +259,44 @@
           `You have already guessed the cat for today, it was ${correctCatName}.`;
       }
     }
+
     fetch('cats.json')
       .then(response => {
         if (!response.ok) throw new Error('Network error');
         return response.json();
       })
       .then(data => {
-        const catData = data[todayFormatted];
         const catContainer = document.getElementById('catImageContainer');
+        const catData = data[todayFormatted];
+        allCatNames = [...new Set(Object.values(data).map(cat => cat.name))];
+
         if (catData) {
           catContainer.innerHTML = `<img src="${catData.image}" referrerpolicy="no-referrer">`;
           correctCatName = catData.name;
-          allCatNames = [...new Set(Object.values(data).map(cat => cat.name))];
-          const lastPlayDate = localStorage.getItem('lastPlayDate');
-          if (lastPlayDate === todayFormatted) {
-            guessInput.disabled = true;
-            const lastCat = localStorage.getItem('lastCat');
-            document.getElementById('statusMessage').textContent =
-              `You have already guessed the cat for today, it was ${lastCat}.`;
-            loadGameState();
-          } else {
-            guessInput.disabled = false;
-          }
         } else {
-          catContainer.innerHTML = `<p>No cat data available for today.</p>`;
+          const allDates = Object.keys(data);
+          const randomDate = allDates[Math.floor(Math.random() * allDates.length)];
+          const randomCat = data[randomDate];
+          catContainer.innerHTML = `<img src="${randomCat.image}" referrerpolicy="no-referrer">`;
+          correctCatName = randomCat.name;
+        }
+
+        const lastPlayDate = localStorage.getItem('lastPlayDate');
+        if (lastPlayDate === todayFormatted) {
+          guessInput.disabled = true;
+          const lastCat = localStorage.getItem('lastCat');
+          document.getElementById('statusMessage').textContent =
+            `You have already guessed the cat for today, it was ${lastCat}.`;
+          loadGameState();
+        } else {
+          guessInput.disabled = false;
         }
       })
       .catch(error => {
         console.error("Error loading cat data:", error);
         document.getElementById('catImageContainer').innerHTML = `<p>Error loading cat data.</p>`;
       });
+
     guessInput.addEventListener('input', function() {
       const value = this.value;
       autocompleteList.innerHTML = '';
@@ -306,23 +316,25 @@
         autocompleteList.appendChild(item);
       });
     });
+
     document.addEventListener('click', function(e) {
       if (e.target !== guessInput) {
         autocompleteList.innerHTML = '';
       }
     });
-    // When input is focused, clear placeholder if empty
+
     guessInput.addEventListener('focus', function() {
       if (this.value === "") {
         this.placeholder = "";
       }
     });
-    // When input loses focus, restore placeholder if empty
+
     guessInput.addEventListener('blur', function() {
       if (this.value === "") {
         this.placeholder = "Guess the Cat!";
       }
     });
+
     const leftPupil = document.getElementById('left-pupil');
     const rightPupil = document.getElementById('right-pupil');
     const container = document.querySelector('.container');
@@ -332,6 +344,7 @@
     };
     const maxMoveX = 8;
     const maxMoveY = 6;
+
     document.addEventListener('mousemove', (e) => {
       const rect = container.getBoundingClientRect();
       const mouseX = e.clientX - rect.left;
@@ -339,6 +352,7 @@
       movePupil(leftPupil, eyeCenters.left, mouseX, mouseY);
       movePupil(rightPupil, eyeCenters.right, mouseX, mouseY);
     });
+
     function movePupil(pupil, center, mouseX, mouseY) {
       const dx = mouseX - center.x;
       const dy = mouseY - center.y;
@@ -348,6 +362,7 @@
       pupil.style.left = `${x - 10}px`;
       pupil.style.top = `${y - 14}px`;
     }
+
     function updateCountdown() {
       const now = new Date();
       const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
@@ -358,11 +373,14 @@
       document.getElementById('countdown').textContent =
         `Countdown to next game: ${hours}h ${minutes}m ${seconds}s`;
     }
+
     updateCountdown();
     setInterval(updateCountdown, 1000);
+
     const circles = document.querySelectorAll('.circle');
     let attempts = 0;
     let solved = false;
+
     function submitGuess() {
       const guess = guessInput.value.trim().toLowerCase();
       if (guess === "") return;
@@ -380,11 +398,13 @@
       guessInput.value = "";
       saveGameState();
     }
+
     guessInput.addEventListener('keydown', (e) => {
       if (e.key === "Enter" && !solved) {
         submitGuess();
       }
     });
+
     function finishGame(correct) {
       let streak = Number(localStorage.getItem('streak')) || 0;
       let totalGuesses = attempts + (correct ? 1 : 0);
@@ -409,10 +429,12 @@
       guessInput.disabled = true;
       saveGameState();
     }
+
     document.getElementById('closePopupBtn').addEventListener('click', () => {
       document.getElementById('popupOverlay').style.display = "none";
       document.body.style.overflow = 'auto';
     });
+
     document.addEventListener('DOMContentLoaded', () => {
       leftPupil.style.left = `${eyeCenters.left.x - 14}px`;
       leftPupil.style.top = `${eyeCenters.left.y - 18}px`;
