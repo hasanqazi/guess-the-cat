@@ -243,9 +243,14 @@
       <button id="closePopupBtn">Close</button>
     </div>
   </div>
+
   <script>
     let allCatNames = [];
     let correctCatName = "";
+    let pixelatedImages = [];
+    let currentImageLevel = 0;
+    let isPixelatedMode = false;
+
     const todayFormatted = (function (date) {
       const year = date.getFullYear();
       let month = date.getMonth() + 1;
@@ -254,10 +259,16 @@
       if (day < 10) day = '0' + day;
       return `${year}-${month}-${day}`;
     })(new Date());
+
     const gameStateKey = `gameState_${todayFormatted}`;
     const guessInput = document.getElementById('guessInput');
     const autocompleteList = document.getElementById('autocomplete-list');
     guessInput.disabled = true;
+
+    function setPixelatedImage() {
+      const catContainer = document.getElementById('catImageContainer');
+      catContainer.innerHTML = `<img src="${pixelatedImages[currentImageLevel]}" referrerpolicy="no-referrer">`;
+    }
 
     function saveGameState() {
       const gameState = {
@@ -296,18 +307,26 @@
         allCatNames = [...new Set(Object.values(data).map(cat => cat.name))];
 
         if (catData) {
-          catContainer.innerHTML = `<img src="${catData.image}" referrerpolicy="no-referrer">`;
           correctCatName = catData.name;
+
+          if (catData.gametype === "pixelated") {
+            isPixelatedMode = true;
+            // Fix: Use the correct property name "pixelated" instead of looking for individual image keys
+            pixelatedImages = catData.pixelated || [];
+            currentImageLevel = 0;
+            setPixelatedImage();
+          } else {
+            catContainer.innerHTML = `<img src="${catData.image}" referrerpolicy="no-referrer">`;
+          }
+
         } else {
           const allDates = Object.keys(data);
           const hash = Array.from(todayFormatted).reduce((acc, char) => acc + char.charCodeAt(0), 0);
           const index = hash % allDates.length;
-          const fallbackDate = allDates[index];
-          const fallbackCat = data[fallbackDate];
-          catContainer.innerHTML = `<img src="${fallbackCat.image}" referrerpolicy="no-referrer">`;
+          const fallbackCat = data[allDates[index]];
           correctCatName = fallbackCat.name;
+          catContainer.innerHTML = `<img src="${fallbackCat.image}" referrerpolicy="no-referrer">`;
         }
-
 
         const lastPlayDate = localStorage.getItem('lastPlayDate');
         if (lastPlayDate === todayFormatted) {
@@ -352,15 +371,11 @@
     });
 
     guessInput.addEventListener('focus', function () {
-      if (this.value === "") {
-        this.placeholder = "";
-      }
+      if (this.value === "") this.placeholder = "";
     });
 
     guessInput.addEventListener('blur', function () {
-      if (this.value === "") {
-        this.placeholder = "Guess the Cat!";
-      }
+      if (this.value === "") this.placeholder = "Guess the Cat!";
     });
 
     const leftPupil = document.getElementById('left-pupil');
@@ -419,6 +434,10 @@
       } else {
         circles[attempts].style.backgroundColor = "#F44336";
         attempts++;
+        if (isPixelatedMode && attempts < 5) {
+          currentImageLevel = Math.min(attempts, 4);
+          setPixelatedImage();
+        }
         if (attempts >= circles.length) {
           finishGame(false);
         }
@@ -442,9 +461,17 @@
         message = `You have guessed the cat for today, it was ${correctCatName}. Your current streak is ${streak}. It took you ${totalGuesses} guess${totalGuesses === 1 ? '' : 'es'}.`;
         let meowAudio = new Audio('meow.mp3');
         meowAudio.play();
+        if (isPixelatedMode) {
+          currentImageLevel = 4;
+          setPixelatedImage();
+        }
       } else {
         streak = 0;
         message = `You didn't guess the cat for today, it was ${correctCatName}. Your current streak is ${streak}.`;
+        if (isPixelatedMode) {
+          currentImageLevel = 4;
+          setPixelatedImage();
+        }
       }
       localStorage.setItem('streak', streak);
       localStorage.setItem('lastPlayDate', todayFormatted);
