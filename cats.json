@@ -161,5 +161,16 @@
     "2025-05-18": {
         "name": "Tardar Sauce (Grumpy Cat)",
         "image": "https://i.imgur.com/jXo8gDd.jpeg"
+    },
+    "2025-05-20": {
+        "name": "Puss in Boots",
+        "gametype": "pixelated",
+        "pixelated": [
+            "https://i.imgur.com/V73So27.jpeg",
+            "https://i.imgur.com/i5mp81Y.jpeg",
+            "https://i.imgur.com/sb0JJGA.jpeg",
+            "https://i.imgur.com/5UUN9mq.jpeg",
+            "https://i.imgur.com/Tym6ogH.png"   
+        ]
     }
 }
