@@ -172,5 +172,16 @@
             "https://i.imgur.com/5UUN9mq.jpeg",
             "https://i.imgur.com/Tym6ogH.png"   
         ]
+    },
+    "2025-05-21": {
+        "name": "Pink Panther",
+        "gametype": "pixelated",
+        "pixelated": [
+            "https://i.imgur.com/bH5DtjM.png",
+            "https://i.imgur.com/ZiOrlmf.png",
+            "https://i.imgur.com/1iZqXVT.png",
+            "https://i.imgur.com/grTpXoE.png",
+            "https://i.imgur.com/cvfSBsf.png"   
+        ]
     }
 }
