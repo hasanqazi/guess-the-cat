@@ -183,5 +183,16 @@
             "https://i.imgur.com/grTpXoE.png",
             "https://i.imgur.com/cvfSBsf.png"   
         ]
+    },
+    "2025-05-22": {
+        "name": "Tiger",
+        "gametype": "pixelated",
+        "pixelated": [
+            "https://i.imgur.com/2nqOaX7.jpeg",
+            "https://i.imgur.com/sAU1qoT.jpeg",
+            "https://i.imgur.com/u8IKhS6.jpeg",
+            "https://i.imgur.com/tteXkdn.jpeg",
+            "https://i.imgur.com/dH06G4H.jpeg"   
+        ]
     }
 }
