@@ -202,5 +202,16 @@
     "2025-05-25": {
         "name": "Peterbald",
         "image": "https://i.imgur.com/AMESLm2.jpeg"
+    },
+    "2025-05-30": {
+        "name": "Tom",
+        "gametype": "pixelated",
+        "pixelated": [
+            "https://i.imgur.com/9PErmvT.jpeg",
+            "https://i.imgur.com/WLLNecb.jpeg",
+            "https://i.imgur.com/HeuuPTi.jpeg",
+            "https://i.imgur.com/G5wXkBJ.jpeg",
+            "https://i.imgur.com/iWk4fnY.jpeg"   
+        ]
     }
 }
