@@ -228,6 +228,17 @@
     "2025-07-05": {
         "name": "Larry (Chief Mouser to the Cabinet Office)",
         "image": "https://i.imgur.com/iOy66tg.jpeg"
+    },
+    "2025-08-08": {
+        "name": "Meowth",
+        "gametype": "pixelated",
+        "pixelated": [
+            "https://i.imgur.com/QebIgUz.jpeg",
+            "https://i.imgur.com/IfRCbdX.jpeg",
+            "https://i.imgur.com/advcXsH.jpeg",
+            "https://i.imgur.com/difoLrW.jpeg",
+            "https://i.imgur.com/MfLLyxL.png"   
+        ]
     }
 
 }
