@@ -213,6 +213,22 @@
       background-color: #734c28;
       cursor: url('mouse.svg'), pointer;
     }
+
+    .autocomplete-active {
+      background-color: #734c28;
+      color: #ffffff;
+    }
+
+    .autocomplete-item.guessed {
+      text-decoration: line-through;
+      color: #666666;
+      background-color: #a37747;
+    }
+
+    .autocomplete-item.guessed:hover {
+      background-color: #a37747;
+      cursor: not-allowed;
+    }
   </style>
 </head>
 
@@ -250,6 +266,10 @@
     let pixelatedImages = [];
     let currentImageLevel = 0;
     let isPixelatedMode = false;
+    let guessedCats = new Set();
+    let attempts = 0;
+    let solved = false;
+    const circles = document.querySelectorAll('.circle');
 
     const todayFormatted = (function (date) {
       const year = date.getFullYear();
@@ -272,9 +292,12 @@
 
     function saveGameState() {
       const gameState = {
-        attempts: attempts,
-        circleColors: Array.from(circles).map(c => c.style.backgroundColor),
-        solved: solved
+        attempts,
+        solved,
+        guessedCats: Array.from(guessedCats),
+        currentImageLevel,
+        isPixelatedMode,
+        correctCatName
       };
       localStorage.setItem(gameStateKey, JSON.stringify(gameState));
     }
@@ -283,16 +306,42 @@
       const savedState = localStorage.getItem(gameStateKey);
       if (savedState) {
         const gameState = JSON.parse(savedState);
-        attempts = gameState.attempts;
-        solved = gameState.solved;
+        attempts = gameState.attempts || 0;
+        solved = gameState.solved || false;
+        guessedCats = new Set(gameState.guessedCats || []);
+        currentImageLevel = gameState.currentImageLevel || 0;
+        isPixelatedMode = gameState.isPixelatedMode || false;
+        correctCatName = gameState.correctCatName;
+
+        // Restore circle colors based on previous attempts
         circles.forEach((circle, i) => {
-          if (gameState.circleColors[i]) {
-            circle.style.backgroundColor = gameState.circleColors[i];
+          if (i < attempts) {
+            circle.style.backgroundColor = "#F44336"; // Red for wrong guesses
+          } else if (solved && i === attempts) {
+            circle.style.backgroundColor = "#4CAF50"; // Green for correct guess
+          } else {
+            circle.style.backgroundColor = "white"; // Remaining attempts
           }
         });
-        guessInput.disabled = true;
-        document.getElementById('statusMessage').textContent =
-          `You have already guessed the cat for today, it was ${correctCatName}.`;
+
+        // Update game UI based on state
+        if (solved) {
+          guessInput.disabled = true;
+          document.getElementById('statusMessage').textContent = 
+            `You have already guessed the cat for today, it was ${correctCatName}.`;
+        } else if (attempts >= circles.length) {
+          guessInput.disabled = true;
+          document.getElementById('statusMessage').textContent = 
+            `You didn't guess the cat for today, it was ${correctCatName}.`;
+        } else {
+          guessInput.disabled = false;
+        }
+
+        // Update pixelated image if applicable
+        if (isPixelatedMode) {
+          currentImageLevel = Math.min(attempts, 4);
+          setPixelatedImage();
+        }
       }
     }
 
@@ -308,35 +357,44 @@
 
         if (catData) {
           correctCatName = catData.name;
-
           if (catData.gametype === "pixelated") {
             isPixelatedMode = true;
-            // Fix: Use the correct property name "pixelated" instead of looking for individual image keys
             pixelatedImages = catData.pixelated || [];
             currentImageLevel = 0;
             setPixelatedImage();
           } else {
             catContainer.innerHTML = `<img src="${catData.image}" referrerpolicy="no-referrer">`;
           }
-
         } else {
           const allDates = Object.keys(data);
           const hash = Array.from(todayFormatted).reduce((acc, char) => acc + char.charCodeAt(0), 0);
           const index = hash % allDates.length;
           const fallbackCat = data[allDates[index]];
           correctCatName = fallbackCat.name;
-          catContainer.innerHTML = `<img src="${fallbackCat.image}" referrerpolicy="no-referrer">`;
+          if (fallbackCat.gametype === "pixelated") {
+            isPixelatedMode = true;
+            pixelatedImages = fallbackCat.pixelated || [];
+            currentImageLevel = 0;
+            setPixelatedImage();
+          } else {
+            catContainer.innerHTML = `<img src="${fallbackCat.image}" referrerpolicy="no-referrer">`;
+          }
         }
 
+        // Always load game state after setting up today's cat
+        loadGameState();
+
+        // If it's a new day, reset everything and save
         const lastPlayDate = localStorage.getItem('lastPlayDate');
-        if (lastPlayDate === todayFormatted) {
-          guessInput.disabled = true;
-          const lastCat = localStorage.getItem('lastCat');
-          document.getElementById('statusMessage').textContent =
-            `You have already guessed the cat for today, it was ${lastCat}.`;
-          loadGameState();
-        } else {
+        if (lastPlayDate !== todayFormatted) {
+          attempts = 0;
+          solved = false;
+          guessedCats = new Set();
+          currentImageLevel = 0;
           guessInput.disabled = false;
+          circles.forEach(circle => circle.style.backgroundColor = "white");
+          document.getElementById('statusMessage').textContent = "";
+          saveGameState();
         }
       })
       .catch(error => {
@@ -344,39 +402,100 @@
         document.getElementById('catImageContainer').innerHTML = `<p>Error loading cat data.</p>`;
       });
 
-    guessInput.addEventListener('input', function () {
-      const value = this.value;
-      autocompleteList.innerHTML = '';
-      if (!value) return;
-      const suggestions = allCatNames.filter(name =>
-        name.toLowerCase().includes(value.toLowerCase())
-      );
-      suggestions.forEach(suggestion => {
-        const item = document.createElement('div');
-        item.classList.add('autocomplete-item');
-        item.textContent = suggestion;
-        item.addEventListener('click', function () {
-          guessInput.value = suggestion;
-          autocompleteList.innerHTML = '';
-          submitGuess();
-        });
-        autocompleteList.appendChild(item);
-      });
+    guessInput.addEventListener('input', function() {
+      showSuggestions();
     });
 
-    document.addEventListener('click', function (e) {
-      if (e.target !== guessInput) {
-        autocompleteList.innerHTML = '';
+    guessInput.addEventListener('click', function() {
+      showSuggestions();
+    });
+
+    let currentFocus = -1;
+
+    guessInput.addEventListener('keydown', function(e) {
+      const items = autocompleteList.getElementsByClassName('autocomplete-item');
+      
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        currentFocus++;
+        addActive(items);
+      }
+      else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        currentFocus--;
+        addActive(items);
+      }
+      else if (e.key === "Enter") {
+        e.preventDefault();
+        if (currentFocus > -1 && items.length) {
+          items[currentFocus].click();
+        } else {
+          submitGuess();
+        }
       }
     });
 
-    guessInput.addEventListener('focus', function () {
-      if (this.value === "") this.placeholder = "";
-    });
+    function showSuggestions() {
+      const value = guessInput.value;
+      autocompleteList.innerHTML = '';
+      currentFocus = -1;
+      
+      if (!value && value !== "") return;
+      
+      const suggestions = allCatNames.filter(name =>
+        name.toLowerCase().includes(value.toLowerCase())
+      );
+      
+      suggestions.forEach((suggestion, index) => {
+        const item = document.createElement('div');
+        item.classList.add('autocomplete-item');
+        if (guessedCats.has(suggestion.toLowerCase())) {
+          item.classList.add('guessed');
+        }
+        item.textContent = suggestion;
+        
+        item.addEventListener('click', function() {
+          if (!guessedCats.has(suggestion.toLowerCase())) {
+            guessInput.value = suggestion;
+            autocompleteList.innerHTML = '';
+            submitGuess();
+          }
+        });
+        
+        item.addEventListener('mouseover', function() {
+          if (!guessedCats.has(suggestion.toLowerCase())) {
+            removeActive(autocompleteList.getElementsByClassName('autocomplete-item'));
+            this.classList.add('autocomplete-active');
+            currentFocus = index;
+          }
+        });
+        
+        item.addEventListener('mouseout', function() {
+          this.classList.remove('autocomplete-active');
+        });
+        
+        autocompleteList.appendChild(item);
+      });
+    }
 
-    guessInput.addEventListener('blur', function () {
-      if (this.value === "") this.placeholder = "Guess the Cat!";
-    });
+    function addActive(items) {
+      if (!items || !items.length) return;
+      
+      removeActive(items);
+      
+      if (currentFocus >= items.length) currentFocus = 0;
+      if (currentFocus < 0) currentFocus = items.length - 1;
+      
+      items[currentFocus].classList.add('autocomplete-active');
+      items[currentFocus].scrollIntoView({ block: 'nearest' });
+      guessInput.value = items[currentFocus].textContent;
+    }
+
+    function removeActive(items) {
+      Array.from(items).forEach(item => {
+        item.classList.remove('autocomplete-active');
+      });
+    }
 
     const leftPupil = document.getElementById('left-pupil');
     const rightPupil = document.getElementById('right-pupil');
@@ -420,13 +539,13 @@
     updateCountdown();
     setInterval(updateCountdown, 1000);
 
-    const circles = document.querySelectorAll('.circle');
-    let attempts = 0;
-    let solved = false;
-
     function submitGuess() {
       const guess = guessInput.value.trim().toLowerCase();
       if (guess === "") return;
+      
+      guessedCats.add(guess);
+      saveGameState(); // Save state immediately after adding the guess
+      
       if (guess === correctCatName.toLowerCase()) {
         circles[attempts].style.backgroundColor = "#4CAF50";
         solved = true;
@@ -438,12 +557,12 @@
           currentImageLevel = Math.min(attempts, 4);
           setPixelatedImage();
         }
+        saveGameState(); // Save state after updating attempts and image
         if (attempts >= circles.length) {
           finishGame(false);
         }
       }
       guessInput.value = "";
-      saveGameState();
     }
 
     guessInput.addEventListener('keydown', (e) => {
