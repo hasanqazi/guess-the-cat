@@ -615,6 +615,21 @@
       rightPupil.style.left = `${eyeCenters.right.x - 14}px`;
       rightPupil.style.top = `${eyeCenters.right.y - 18}px`;
     });
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(e) {
+        const isClickInsideInput = guessInput.contains(e.target);
+        const isClickInsideDropdown = autocompleteList.contains(e.target);
+        
+        if (!isClickInsideInput && !isClickInsideDropdown) {
+            autocompleteList.innerHTML = '';
+        }
+    });
+
+    // Prevent dropdown from closing when clicking inside it
+    autocompleteList.addEventListener('click', function(e) {
+        e.stopPropagation();
+    });
   </script>
 </body>
 
