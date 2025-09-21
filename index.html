@@ -313,18 +313,18 @@
         isPixelatedMode = gameState.isPixelatedMode || false;
         correctCatName = gameState.correctCatName;
 
-        // Restore circle colors based on previous attempts
+
         circles.forEach((circle, i) => {
           if (i < attempts) {
-            circle.style.backgroundColor = "#F44336"; // Red for wrong guesses
+            circle.style.backgroundColor = "#F44336";
           } else if (solved && i === attempts) {
-            circle.style.backgroundColor = "#4CAF50"; // Green for correct guess
+            circle.style.backgroundColor = "#4CAF50"; 
           } else {
-            circle.style.backgroundColor = "white"; // Remaining attempts
+            circle.style.backgroundColor = "white"; 
           }
         });
 
-        // Update game UI based on state
+
         if (solved) {
           guessInput.disabled = true;
           document.getElementById('statusMessage').textContent = 
@@ -337,7 +337,7 @@
           guessInput.disabled = false;
         }
 
-        // Update pixelated image if applicable
+ 
         if (isPixelatedMode) {
           currentImageLevel = Math.min(attempts, 4);
           setPixelatedImage();
@@ -355,36 +355,35 @@
         const catData = data[todayFormatted];
         allCatNames = [...new Set(Object.values(data).map(cat => cat.name))];
 
+
+        let selectedCat;
         if (catData) {
-          correctCatName = catData.name;
-          if (catData.gametype === "pixelated") {
-            isPixelatedMode = true;
-            pixelatedImages = catData.pixelated || [];
-            currentImageLevel = 0;
-            setPixelatedImage();
-          } else {
-            catContainer.innerHTML = `<img src="${catData.image}" referrerpolicy="no-referrer">`;
-          }
+          selectedCat = catData;
         } else {
           const allDates = Object.keys(data);
           const hash = Array.from(todayFormatted).reduce((acc, char) => acc + char.charCodeAt(0), 0);
           const index = hash % allDates.length;
-          const fallbackCat = data[allDates[index]];
-          correctCatName = fallbackCat.name;
-          if (fallbackCat.gametype === "pixelated") {
-            isPixelatedMode = true;
-            pixelatedImages = fallbackCat.pixelated || [];
-            currentImageLevel = 0;
-            setPixelatedImage();
-          } else {
-            catContainer.innerHTML = `<img src="${fallbackCat.image}" referrerpolicy="no-referrer">`;
-          }
+          selectedCat = data[allDates[index]];
         }
 
-        // Always load game state after setting up today's cat
+ 
+        correctCatName = selectedCat.name;
+
+ 
+        if (selectedCat.gametype === "pixelated") {
+          isPixelatedMode = true;
+          pixelatedImages = selectedCat.pixelated || [];
+          currentImageLevel = 0;
+          setPixelatedImage();
+        } else {
+          isPixelatedMode = false;
+          catContainer.innerHTML = `<img src="${selectedCat.image}" referrerpolicy="no-referrer">`;
+        }
+
+
         loadGameState();
 
-        // If it's a new day, reset everything and save
+ 
         const lastPlayDate = localStorage.getItem('lastPlayDate');
         if (lastPlayDate !== todayFormatted) {
           attempts = 0;
@@ -544,7 +543,7 @@
       if (guess === "") return;
       
       guessedCats.add(guess);
-      saveGameState(); // Save state immediately after adding the guess
+      saveGameState(); 
       
       if (guess === correctCatName.toLowerCase()) {
         circles[attempts].style.backgroundColor = "#4CAF50";
@@ -557,7 +556,7 @@
           currentImageLevel = Math.min(attempts, 4);
           setPixelatedImage();
         }
-        saveGameState(); // Save state after updating attempts and image
+        saveGameState(); 
         if (attempts >= circles.length) {
           finishGame(false);
         }
@@ -616,7 +615,6 @@
       rightPupil.style.top = `${eyeCenters.right.y - 18}px`;
     });
 
-    // Close dropdown when clicking outside
     document.addEventListener('click', function(e) {
         const isClickInsideInput = guessInput.contains(e.target);
         const isClickInsideDropdown = autocompleteList.contains(e.target);
@@ -626,7 +624,6 @@
         }
     });
 
-    // Prevent dropdown from closing when clicking inside it
     autocompleteList.addEventListener('click', function(e) {
         e.stopPropagation();
     });
