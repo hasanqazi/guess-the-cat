@@ -3,8 +3,8 @@
 
 <svg
    width="1512"
-   height="512"
-   viewBox="0 0 400.05001 135.46667"
+   height="626"
+   viewBox="0 0 400.05001 165.62917"
    version="1.1"
    id="svg1"
    xml:space="preserve"
@@ -24,7 +24,7 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:zoom="0.99662461"
-     inkscape:cx="789.16374"
+     inkscape:cx="790.16712"
      inkscape:cy="371.75482"
      inkscape:window-width="2560"
      inkscape:window-height="1369"
@@ -36,7 +36,7 @@
      id="g2"
      inkscape:label="cat"
      style="display:inline"
-     transform="matrix(1.0511753,0,0,1.0511753,-9.9783535,-4.9079284)"><ellipse
+     transform="matrix(1.0511753,0,0,1.0511753,-9.9783535,20.809651)"><ellipse
        style="fill:#000000;stroke-width:0.294171"
        id="path1"
        cx="200.26476"

@@ -6,6 +6,10 @@
   <title>Guess the Cat 😼</title>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --mouse-cursor: url('mouse.svg'), pointer;
+    }
+
     @font-face {
       font-family: 'FOT-Seurat Pro B';
       src: url('font/FOT-Seurat Pro B.otf') format('opentype');
@@ -26,7 +30,7 @@
       justify-content: center;
       align-items: center;
       height: 100vh;
-      cursor: url('mouse.svg'), pointer;
+      cursor: var(--mouse-cursor);
     }
 
     .container {
@@ -41,7 +45,7 @@
 
     .cat {
       position: absolute;
-      top: -340%;
+      top: -430%;
       left: 50%;
       transform: translateX(-50%);
       width: 1024px;
@@ -99,7 +103,7 @@
     }
 
     input[type="text"]:hover {
-      cursor: url('mouse.svg'), default;
+      cursor: var(--mouse-cursor);
     }
 
     ::placeholder {
@@ -150,7 +154,7 @@
     #countdown {
       margin-top: 10px;
       font-size: 1.5rem;
-      color: #333;
+      color: #362641;
     }
 
     .popup-overlay {
@@ -182,7 +186,7 @@
       font-size: 1rem;
       border: none;
       border-radius: 4px;
-      cursor: url('mouse.svg'), pointer;
+      cursor: var(--mouse-cursor);
       background-color: #734c28;
       color: black;
     }
@@ -204,14 +208,14 @@
 
     .autocomplete-item {
       padding: 10px;
-      cursor: url('mouse.svg'), pointer;
+      cursor: var(--mouse-cursor);
       color: black;
       font-family: 'FOT-Seurat Pro B', sans-serif;
     }
 
     .autocomplete-item:hover {
       background-color: #734c28;
-      cursor: url('mouse.svg'), pointer;
+      cursor: var(--mouse-cursor);
     }
 
     .autocomplete-active {
@@ -261,18 +265,18 @@
   </div>
 
   <script>
-    const EventType = {
-      DEFAULT: "DEFAULT",
-      HALLOWEEN: "HALLOWEEN"
-    };
-
+    const EventType = { DEFAULT: "DEFAULT", HALLOWEEN: "HALLOWEEN" };
     let eventType = EventType.DEFAULT;
-    if (new Date().getMonth() === 9) eventType = EventType.HALLOWEEN;
-
+    if (new Date().getMonth() === 9) eventType = EventType.DEFAULT;
+    const catElement = document.querySelector('.cat');
     if (eventType === EventType.HALLOWEEN) {
       document.body.style.background = "url('background_hal.svg') repeat";
+      if (catElement) catElement.src = 'bitmap_hal.svg';
+      document.documentElement.style.setProperty('--mouse-cursor', "url('mouse_hal.svg'), pointer");
     } else {
       document.body.style.background = "url('background.svg') repeat";
+      if (catElement) catElement.src = 'bitmap.svg';
+      document.documentElement.style.setProperty('--mouse-cursor', "url('mouse.svg'), pointer");
     }
 
     let allCatNames = [];
