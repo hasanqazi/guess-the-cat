@@ -261,6 +261,20 @@
   </div>
 
   <script>
+    const EventType = {
+      DEFAULT: "DEFAULT",
+      HALLOWEEN: "HALLOWEEN"
+    };
+
+    let eventType = EventType.DEFAULT;
+    if (new Date().getMonth() === 9) eventType = EventType.HALLOWEEN;
+
+    if (eventType === EventType.HALLOWEEN) {
+      document.body.style.background = "url('background_hal.svg') repeat";
+    } else {
+      document.body.style.background = "url('background.svg') repeat";
+    }
+
     let allCatNames = [];
     let correctCatName = "";
     let pixelatedImages = [];
@@ -318,26 +332,26 @@
           if (i < attempts) {
             circle.style.backgroundColor = "#F44336";
           } else if (solved && i === attempts) {
-            circle.style.backgroundColor = "#4CAF50"; 
+            circle.style.backgroundColor = "#4CAF50";
           } else {
-            circle.style.backgroundColor = "white"; 
+            circle.style.backgroundColor = "white";
           }
         });
 
 
         if (solved) {
           guessInput.disabled = true;
-          document.getElementById('statusMessage').textContent = 
+          document.getElementById('statusMessage').textContent =
             `You have already guessed the cat for today, it was ${correctCatName}.`;
         } else if (attempts >= circles.length) {
           guessInput.disabled = true;
-          document.getElementById('statusMessage').textContent = 
+          document.getElementById('statusMessage').textContent =
             `You didn't guess the cat for today, it was ${correctCatName}.`;
         } else {
           guessInput.disabled = false;
         }
 
- 
+
         if (isPixelatedMode) {
           currentImageLevel = Math.min(attempts, 4);
           setPixelatedImage();
@@ -366,10 +380,10 @@
           selectedCat = data[allDates[index]];
         }
 
- 
+
         correctCatName = selectedCat.name;
 
- 
+
         if (selectedCat.gametype === "pixelated") {
           isPixelatedMode = true;
           pixelatedImages = selectedCat.pixelated || [];
@@ -383,7 +397,7 @@
 
         loadGameState();
 
- 
+
         const lastPlayDate = localStorage.getItem('lastPlayDate');
         if (lastPlayDate !== todayFormatted) {
           attempts = 0;
@@ -401,19 +415,19 @@
         document.getElementById('catImageContainer').innerHTML = `<p>Error loading cat data.</p>`;
       });
 
-    guessInput.addEventListener('input', function() {
+    guessInput.addEventListener('input', function () {
       showSuggestions();
     });
 
-    guessInput.addEventListener('click', function() {
+    guessInput.addEventListener('click', function () {
       showSuggestions();
     });
 
     let currentFocus = -1;
 
-    guessInput.addEventListener('keydown', function(e) {
+    guessInput.addEventListener('keydown', function (e) {
       const items = autocompleteList.getElementsByClassName('autocomplete-item');
-      
+
       if (e.key === "ArrowDown") {
         e.preventDefault();
         currentFocus++;
@@ -438,13 +452,13 @@
       const value = guessInput.value;
       autocompleteList.innerHTML = '';
       currentFocus = -1;
-      
+
       if (!value && value !== "") return;
-      
+
       const suggestions = allCatNames.filter(name =>
         name.toLowerCase().includes(value.toLowerCase())
       );
-      
+
       suggestions.forEach((suggestion, index) => {
         const item = document.createElement('div');
         item.classList.add('autocomplete-item');
@@ -452,39 +466,39 @@
           item.classList.add('guessed');
         }
         item.textContent = suggestion;
-        
-        item.addEventListener('click', function() {
+
+        item.addEventListener('click', function () {
           if (!guessedCats.has(suggestion.toLowerCase())) {
             guessInput.value = suggestion;
             autocompleteList.innerHTML = '';
             submitGuess();
           }
         });
-        
-        item.addEventListener('mouseover', function() {
+
+        item.addEventListener('mouseover', function () {
           if (!guessedCats.has(suggestion.toLowerCase())) {
             removeActive(autocompleteList.getElementsByClassName('autocomplete-item'));
             this.classList.add('autocomplete-active');
             currentFocus = index;
           }
         });
-        
-        item.addEventListener('mouseout', function() {
+
+        item.addEventListener('mouseout', function () {
           this.classList.remove('autocomplete-active');
         });
-        
+
         autocompleteList.appendChild(item);
       });
     }
 
     function addActive(items) {
       if (!items || !items.length) return;
-      
+
       removeActive(items);
-      
+
       if (currentFocus >= items.length) currentFocus = 0;
       if (currentFocus < 0) currentFocus = items.length - 1;
-      
+
       items[currentFocus].classList.add('autocomplete-active');
       items[currentFocus].scrollIntoView({ block: 'nearest' });
       guessInput.value = items[currentFocus].textContent;
@@ -541,10 +555,10 @@
     function submitGuess() {
       const guess = guessInput.value.trim().toLowerCase();
       if (guess === "") return;
-      
+
       guessedCats.add(guess);
-      saveGameState(); 
-      
+      saveGameState();
+
       if (guess === correctCatName.toLowerCase()) {
         circles[attempts].style.backgroundColor = "#4CAF50";
         solved = true;
@@ -556,7 +570,7 @@
           currentImageLevel = Math.min(attempts, 4);
           setPixelatedImage();
         }
-        saveGameState(); 
+        saveGameState();
         if (attempts >= circles.length) {
           finishGame(false);
         }
@@ -615,17 +629,17 @@
       rightPupil.style.top = `${eyeCenters.right.y - 18}px`;
     });
 
-    document.addEventListener('click', function(e) {
-        const isClickInsideInput = guessInput.contains(e.target);
-        const isClickInsideDropdown = autocompleteList.contains(e.target);
-        
-        if (!isClickInsideInput && !isClickInsideDropdown) {
-            autocompleteList.innerHTML = '';
-        }
+    document.addEventListener('click', function (e) {
+      const isClickInsideInput = guessInput.contains(e.target);
+      const isClickInsideDropdown = autocompleteList.contains(e.target);
+
+      if (!isClickInsideInput && !isClickInsideDropdown) {
+        autocompleteList.innerHTML = '';
+      }
     });
 
-    autocompleteList.addEventListener('click', function(e) {
-        e.stopPropagation();
+    autocompleteList.addEventListener('click', function (e) {
+      e.stopPropagation();
     });
   </script>
 </body>
