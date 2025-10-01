@@ -267,7 +267,7 @@
   <script>
     const EventType = { DEFAULT: "DEFAULT", HALLOWEEN: "HALLOWEEN" };
     let eventType = EventType.DEFAULT;
-    if (new Date().getMonth() === 9) eventType = EventType.DEFAULT;
+    if (new Date().getMonth() === 9) eventType = EventType.HALLOWEEN;
     const catElement = document.querySelector('.cat');
     if (eventType === EventType.HALLOWEEN) {
       document.body.style.background = "url('background_hal.svg') repeat";
