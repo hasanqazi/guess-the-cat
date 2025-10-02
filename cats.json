@@ -243,6 +243,17 @@
     "2025-10-01": {
         "name": "Cheshire Cat",
         "image": "https://i.imgur.com/OzfFdft.jpeg"
+    },
+    "2025-10-02": {
+        "name": "Cats (James Corden)",
+        "gametype": "pixelated",
+        "pixelated": [
+            "https://i.imgur.com/KbmCgtR.png",
+            "https://i.imgur.com/tE9IUsW.png",
+            "https://i.imgur.com/2XlVGE9.png",
+            "https://i.imgur.com/Zq9iPbI.png",
+            "https://i.imgur.com/XwxGUkB.png"   
+        ]
     }
 
 }
