@@ -446,7 +446,9 @@
       }
       else if (e.key === "Enter") {
         e.preventDefault();
-        if (currentFocus > -1 && items.length) {
+        if (items.length > 0 && currentFocus === -1) {
+          items[0].click();
+        } else if (currentFocus > -1 && items.length) {
           items[currentFocus].click();
         } else {
           submitGuess();
