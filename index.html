@@ -279,8 +279,6 @@
       document.documentElement.style.setProperty('--mouse-cursor', "url('mouse.svg'), pointer");
     }
 
-    // hector got a 13 minute gliepner on weaver
-
     let allCatNames = [];
     let correctCatName = "";
     let pixelatedImages = [];
@@ -333,7 +331,6 @@
         isPixelatedMode = gameState.isPixelatedMode || false;
         correctCatName = gameState.correctCatName;
 
-
         circles.forEach((circle, i) => {
           if (i < attempts) {
             circle.style.backgroundColor = "#F44336";
@@ -343,7 +340,6 @@
             circle.style.backgroundColor = "white";
           }
         });
-
 
         if (solved) {
           guessInput.disabled = true;
@@ -356,7 +352,6 @@
         } else {
           guessInput.disabled = false;
         }
-
 
         if (isPixelatedMode) {
           currentImageLevel = Math.min(attempts, 4);
@@ -374,7 +369,7 @@
         const catContainer = document.getElementById('catImageContainer');
         const catData = data[todayFormatted];
         allCatNames = [...new Set(Object.values(data).map(cat => cat.name))];
-
+        allCatNames.sort();
 
         let selectedCat;
         if (catData) {
@@ -386,9 +381,7 @@
           selectedCat = data[allDates[index]];
         }
 
-
         correctCatName = selectedCat.name;
-
 
         if (selectedCat.gametype === "pixelated") {
           isPixelatedMode = true;
@@ -400,9 +393,7 @@
           catContainer.innerHTML = `<img src="${selectedCat.image}" referrerpolicy="no-referrer">`;
         }
 
-
         loadGameState();
-
 
         const lastPlayDate = localStorage.getItem('lastPlayDate');
         if (lastPlayDate !== todayFormatted) {
