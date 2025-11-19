@@ -263,8 +263,39 @@
         "name": "Tonkinese",
         "image": "https://res.cloudinary.com/dpjt1oduu/image/upload/v1763478582/images_wgmpok.webp"
     },
-    "2025-11-20": {
+    "2025-11-21": {
         "name": "Kurilian Bobtail",
         "image": "https://res.cloudinary.com/dpjt1oduu/image/upload/v1763478713/images2_ixdima.webp"
+    },
+    "2025-11-23": {
+        "name": "Colorpoint Shorthair",
+        "image": "https://res.cloudinary.com/dpjt1oduu/image/upload/v1763537547/82df1386-9d21-414b-91dd-1a4432f5ffa1.png"
+    },
+    "2025-11-27": {
+        "name": "Pixiebob",
+        "image": "https://res.cloudinary.com/dpjt1oduu/image/upload/v1763537625/affea490-0420-4760-af06-ca350c5909bc.png"
+    },
+    "2025-12-02": {
+        "name": "Selkirk Rex",
+        "image": "https://res.cloudinary.com/dpjt1oduu/image/upload/v1763537658/3353b9f6-612e-4be8-9af7-b6165ca2ba8e.png"
+    },
+    "2025-12-05": {
+        "name": "Oriental Longhair",
+        "image": "https://res.cloudinary.com/dpjt1oduu/image/upload/v1763537745/4e1e74a7-4036-49ca-b392-4749fbb0793e.png"
+    },
+    "2025-12-08": {
+        "name": "Ocicat",
+        "image": "https://res.cloudinary.com/dpjt1oduu/image/upload/v1763537825/1668b70c-cfc2-4c82-a47c-2474b5397e88.png"
+    },
+    "2025-12-12": {
+        "name": "Cheetah",
+        "gametype": "pixelated",
+        "pixelated": [
+            "https://res.cloudinary.com/dpjt1oduu/image/upload/v1763538706/cheetah_pixel50_cqwiph.jpg",
+            "https://res.cloudinary.com/dpjt1oduu/image/upload/v1763538707/cheetah_pixel40_tlvsvb.jpg",
+            "https://res.cloudinary.com/dpjt1oduu/image/upload/v1763538707/cheetah_pixel30_cvqxaq.jpg",
+            "https://res.cloudinary.com/dpjt1oduu/image/upload/v1763538707/cheetah_pixel20_qqsgkk.jpg",
+            "https://res.cloudinary.com/dpjt1oduu/image/upload/v1763538699/cheetah_opijl6.webp"   
+        ]
     }
 }
