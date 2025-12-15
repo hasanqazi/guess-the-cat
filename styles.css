@@ -225,3 +225,21 @@ input[type="text"]:hover {
     background-color: #a37747;
     cursor: not-allowed;
 }
+
+@keyframes snowfall {
+    to {
+        transform: translateY(100vh) translateX(var(--tx, 0));
+        opacity: var(--fade-out, 0);
+    }
+}
+
+.snowflake {
+    position: fixed;
+    top: -50px;
+    pointer-events: none;
+    font-size: 1em;
+    color: white;
+    opacity: 0.9;
+    z-index: -1;
+    animation: snowfall linear forwards;
+}

@@ -1,15 +1,30 @@
-const EventType = { DEFAULT: "DEFAULT", HALLOWEEN: "HALLOWEEN" };
+const EventType = { DEFAULT: "DEFAULT", HALLOWEEN: "HALLOWEEN", CHRISTMAS: "CHRISTMAS" };
 let eventType = EventType.DEFAULT;
 if (new Date().getMonth() === 9) eventType = EventType.HALLOWEEN;
+if (new Date().getMonth() === 11) eventType = EventType.CHRISTMAS;
+const SNOWFLAKE_COUNT = 500;
+const SNOWFLAKE_FADE_OUT = 0.5;
+const SNOWFLAKE_SIZE = '1.5em';
 const catElement = document.querySelector('.cat');
+const pawsElement = document.querySelector('.paws');
 if (eventType === EventType.HALLOWEEN) {
     document.body.style.background = "url('assets/images/background_hal.svg') repeat";
     if (catElement) catElement.src = 'assets/images/bitmap_hal.svg';
     document.documentElement.style.setProperty('--mouse-cursor', "url('assets/images/mouse_hal.svg'), pointer");
+} else if (eventType === EventType.CHRISTMAS) {
+    document.body.style.background = "url('assets/images/background_chr.svg') repeat";
+    if (catElement) catElement.src = 'assets/images/bitmap_chr.svg';
+    if (pawsElement) pawsElement.src = 'assets/images/paws_chr.svg';
+    document.documentElement.style.setProperty('--mouse-cursor', "url('assets/images/mouse_chr.png'), pointer");
 } else {
     document.body.style.background = "url('assets/images/background.svg') repeat";
     if (catElement) catElement.src = 'assets/images/bitmap.svg';
     document.documentElement.style.setProperty('--mouse-cursor', "url('assets/images/mouse.svg'), pointer");
+}
+
+if (eventType === EventType.CHRISTMAS) {
+    document.getElementById('countdown').style.color = "white";
+    createSnowflakes();
 }
 
 let allCatNames = [];
@@ -35,6 +50,36 @@ const gameStateKey = `gameState_${todayFormatted}`;
 const guessInput = document.getElementById('guessInput');
 const autocompleteList = document.getElementById('autocomplete-list');
 guessInput.disabled = true;
+
+function createSnowflakes() {
+    function createSnowflake() {
+        const snowflake = document.createElement('div');
+        snowflake.classList.add('snowflake');
+        snowflake.textContent = '❄';
+        
+        const left = Math.random() * window.innerWidth;
+        const duration = 12 + Math.random() * 4;
+        const delay = Math.random() * 2;
+        const swayAmount = (Math.random() - 0.5) * 100;
+        
+        snowflake.style.left = left + 'px';
+        snowflake.style.fontSize = SNOWFLAKE_SIZE;
+        snowflake.style.setProperty('--tx', swayAmount + 'px');
+        snowflake.style.setProperty('--fade-out', SNOWFLAKE_FADE_OUT);
+        snowflake.style.animationDuration = duration + 's';
+        snowflake.style.animationDelay = delay + 's';
+        
+        document.body.appendChild(snowflake);
+        
+        setTimeout(() => snowflake.remove(), (duration + delay) * 1000);
+    }
+    
+    for (let i = 0; i < SNOWFLAKE_COUNT; i++) {
+        setTimeout(createSnowflake, i * 50);
+    }
+    
+    setInterval(createSnowflake, 200);
+}
 
 function setPixelatedImage() {
     const catContainer = document.getElementById('catImageContainer');
