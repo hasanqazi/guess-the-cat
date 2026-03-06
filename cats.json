@@ -301,5 +301,29 @@
     "2026-02-14": {
         "name": "Gertrude",
         "image": "https://res.cloudinary.com/dpjt1oduu/image/upload/v1771087194/NPC-catzgertrude_czvyps.webp"
+    },
+    "2026-03-06": {
+        "name": "Ocelot",
+        "image": "https://res.cloudinary.com/dpjt1oduu/image/upload/v1772805731/060d1c1c-270b-43a7-b10c-cccf01b0fe3c.png"
+    },
+    "2026-03-07": {
+        "name": "Serval",
+        "image": "https://res.cloudinary.com/dpjt1oduu/image/upload/v1772805826/a0b5c6ef-e2e4-4907-b876-2dc8fd8edda9.png"
+    },
+    "2026-03-08": {
+        "name": "Caracal",
+        "image": "https://res.cloudinary.com/dpjt1oduu/image/upload/v1772805919/1568ec2a-5d5f-407c-8167-b67c943a03b9.png"
+    },
+    "2026-03-09": {
+        "name": "Bobcat",
+        "image": "https://res.cloudinary.com/dpjt1oduu/image/upload/v1772805969/44c8a001-a762-4664-9ce5-9b4d04fa7703.png"
+    },
+    "2026-03-11": {
+        "name": "Suphalak",
+        "image": "https://res.cloudinary.com/dpjt1oduu/image/upload/v1772806133/b66d6fdf-8128-4d0a-af13-c80833e1d40f.png"
+    },
+    "2026-03-12": {
+        "name": "Kinkalow",
+        "image": "https://res.cloudinary.com/dpjt1oduu/image/upload/v1772806233/bd156761-7518-425a-b5ce-27817d7024ef.png"
     }
 }
