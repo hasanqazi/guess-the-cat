@@ -1,7 +1,12 @@
-const EventType = { DEFAULT: "DEFAULT", HALLOWEEN: "HALLOWEEN", CHRISTMAS: "CHRISTMAS" };
+const EventType = { DEFAULT: "DEFAULT", APRIL_FOOLS: "APRIL_FOOLS", HALLOWEEN: "HALLOWEEN", CHRISTMAS: "CHRISTMAS" };
+const today = new Date();
 let eventType = EventType.DEFAULT;
-if (new Date().getMonth() === 9) eventType = EventType.HALLOWEEN;
-if (new Date().getMonth() === 11) eventType = EventType.CHRISTMAS;
+if (today.getMonth() === 3 && today.getDate() === 1) eventType = EventType.APRIL_FOOLS;
+if (today.getMonth() === 9) eventType = EventType.HALLOWEEN;
+if (today.getMonth() === 11) eventType = EventType.CHRISTMAS;
+const displayAnimal = eventType === EventType.APRIL_FOOLS ? "dog" : "cat";
+const displayAnimalTitle = displayAnimal.charAt(0).toUpperCase() + displayAnimal.slice(1);
+const successAudioPath = eventType === EventType.APRIL_FOOLS ? 'assets/audio/woof.wav' : 'assets/audio/meow.mp3';
 const SNOWFLAKE_COUNT = 500;
 const SNOWFLAKE_FADE_OUT = 0.5;
 const SNOWFLAKE_SIZE = '1.5em';
@@ -11,6 +16,11 @@ if (eventType === EventType.HALLOWEEN) {
     document.body.style.background = "url('assets/images/background_hal.svg') repeat";
     if (catElement) catElement.src = 'assets/images/bitmap_hal.svg';
     document.documentElement.style.setProperty('--mouse-cursor', "url('assets/images/mouse_hal.svg'), pointer");
+} else if (eventType === EventType.APRIL_FOOLS) {
+    document.body.style.background = "url('assets/images/background.svg') repeat";
+    if (catElement) catElement.src = 'assets/images/bitmap_apr.svg';
+    if (pawsElement) pawsElement.src = 'assets/images/paws_apr.svg';
+    document.documentElement.style.setProperty('--mouse-cursor', "url('assets/images/mouse_apr.png'), pointer");
 } else if (eventType === EventType.CHRISTMAS) {
     document.body.style.background = "url('assets/images/background_chr.svg') repeat";
     if (catElement) catElement.src = 'assets/images/bitmap_chr.svg';
@@ -44,12 +54,36 @@ const todayFormatted = (function (date) {
     if (month < 10) month = '0' + month;
     if (day < 10) day = '0' + day;
     return `${year}-${month}-${day}`;
-})(new Date());
+})(today);
 
 const gameStateKey = `gameState_${todayFormatted}`;
 const guessInput = document.getElementById('guessInput');
 const autocompleteList = document.getElementById('autocomplete-list');
 guessInput.disabled = true;
+
+document.title = document.title.replace('Cat', displayAnimalTitle);
+guessInput.placeholder = `Guess the ${displayAnimalTitle}!`;
+
+const loadingMessage = document.querySelector('#catImageContainer p');
+if (loadingMessage) loadingMessage.textContent = `Loading today's ${displayAnimal}...`;
+if (catElement) catElement.alt = `${displayAnimalTitle} SVG`;
+if (pawsElement) pawsElement.alt = `${displayAnimalTitle} Paws`;
+
+function getSolvedStatusMessage() {
+    return `You have already guessed the ${displayAnimal} for today, it was ${correctCatName}.`;
+}
+
+function getFailedStatusMessage() {
+    return `You didn't guess the ${displayAnimal} for today, it was ${correctCatName}.`;
+}
+
+function getCorrectPopupMessage(streak, totalGuesses) {
+    return `You have guessed the ${displayAnimal} for today, it was ${correctCatName}. Your current streak is ${streak}. It took you ${totalGuesses} guess${totalGuesses === 1 ? '' : 'es'}.`;
+}
+
+function getIncorrectPopupMessage(streak) {
+    return `You didn't guess the ${displayAnimal} for today, it was ${correctCatName}. Your current streak is ${streak}.`;
+}
 
 function createSnowflakes() {
     function createSnowflake() {
@@ -121,12 +155,10 @@ function loadGameState() {
 
         if (solved) {
             guessInput.disabled = true;
-            document.getElementById('statusMessage').textContent =
-                `You have already guessed the cat for today, it was ${correctCatName}.`;
+            document.getElementById('statusMessage').textContent = getSolvedStatusMessage();
         } else if (attempts >= circles.length) {
             guessInput.disabled = true;
-            document.getElementById('statusMessage').textContent =
-                `You didn't guess the cat for today, it was ${correctCatName}.`;
+            document.getElementById('statusMessage').textContent = getFailedStatusMessage();
         } else {
             guessInput.disabled = false;
         }
@@ -187,7 +219,7 @@ fetch('cats.json')
     })
     .catch(error => {
         console.error("Error loading cat data:", error);
-        document.getElementById('catImageContainer').innerHTML = `<p>Error loading cat data.</p>`;
+        document.getElementById('catImageContainer').innerHTML = `<p>Error loading ${displayAnimal} data.</p>`;
     });
 
 guessInput.addEventListener('input', function () {
@@ -290,6 +322,7 @@ function removeActive(items) {
 const leftPupil = document.getElementById('left-pupil');
 const rightPupil = document.getElementById('right-pupil');
 const container = document.querySelector('.container');
+const eyesDisabled = eventType === EventType.APRIL_FOOLS;
 const eyeCenters = {
     left: { x: 245, y: -79 },
     right: { x: 349, y: -79 }
@@ -297,13 +330,18 @@ const eyeCenters = {
 const maxMoveX = 8;
 const maxMoveY = 6;
 
-document.addEventListener('mousemove', (e) => {
-    const rect = container.getBoundingClientRect();
-    const mouseX = e.clientX - rect.left;
-    const mouseY = e.clientY - rect.top;
-    movePupil(leftPupil, eyeCenters.left, mouseX, mouseY);
-    movePupil(rightPupil, eyeCenters.right, mouseX, mouseY);
-});
+if (eyesDisabled) {
+    if (leftPupil) leftPupil.style.display = 'none';
+    if (rightPupil) rightPupil.style.display = 'none';
+} else {
+    document.addEventListener('mousemove', (e) => {
+        const rect = container.getBoundingClientRect();
+        const mouseX = e.clientX - rect.left;
+        const mouseY = e.clientY - rect.top;
+        movePupil(leftPupil, eyeCenters.left, mouseX, mouseY);
+        movePupil(rightPupil, eyeCenters.right, mouseX, mouseY);
+    });
+}
 
 function movePupil(pupil, center, mouseX, mouseY) {
     const dx = mouseX - center.x;
@@ -367,16 +405,16 @@ function finishGame(correct) {
     let message = "";
     if (correct) {
         streak++;
-        message = `You have guessed the cat for today, it was ${correctCatName}. Your current streak is ${streak}. It took you ${totalGuesses} guess${totalGuesses === 1 ? '' : 'es'}.`;
-        let meowAudio = new Audio('assets/audio/meow.mp3');
-        meowAudio.play();
+        message = getCorrectPopupMessage(streak, totalGuesses);
+        let successAudio = new Audio(successAudioPath);
+        successAudio.play();
         if (isPixelatedMode) {
             currentImageLevel = 4;
             setPixelatedImage();
         }
     } else {
         streak = 0;
-        message = `You didn't guess the cat for today, it was ${correctCatName}. Your current streak is ${streak}.`;
+        message = getIncorrectPopupMessage(streak);
         if (isPixelatedMode) {
             currentImageLevel = 4;
             setPixelatedImage();
@@ -388,8 +426,7 @@ function finishGame(correct) {
     document.getElementById('popupText').textContent = message;
     document.getElementById('popupOverlay').style.display = "flex";
     document.body.style.overflow = 'hidden';
-    document.getElementById('statusMessage').textContent =
-        correct ? `You have already guessed the cat for today, it was ${correctCatName}.` : `You didn't guess the cat for today, it was ${correctCatName}.`;
+    document.getElementById('statusMessage').textContent = correct ? getSolvedStatusMessage() : getFailedStatusMessage();
     guessInput.disabled = true;
     saveGameState();
 }
@@ -400,6 +437,7 @@ document.getElementById('closePopupBtn').addEventListener('click', () => {
 });
 
 document.addEventListener('DOMContentLoaded', () => {
+    if (eyesDisabled) return;
     leftPupil.style.left = `${eyeCenters.left.x - 14}px`;
     leftPupil.style.top = `${eyeCenters.left.y - 18}px`;
     rightPupil.style.left = `${eyeCenters.right.x - 14}px`;
